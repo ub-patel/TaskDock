@@ -66,6 +66,12 @@ export const UI_LABELS = {
       DELETE: "Delete",
       CONFIRM_DELETE: "Are you sure you want to delete this task?",
     },
+    ERROR: {
+      LOAD: "Failed to load tasks.",
+      CREATE: "Failed to create task.",
+      UPDATE: "Failed to update task.",
+      DELETE: "Failed to delete task.",
+    },
     STATUS: {
       TO_DO: "To Do",
       IN_PROGRESS: "In Progress",

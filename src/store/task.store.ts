@@ -1,6 +1,7 @@
 import { create } from "zustand";
-import { TaskService } from "@/services/task.service";
-import type { Task, CreateTaskInput, UpdateTaskInput } from "@/types";
+import { TaskService } from "../services/task.service";
+import type { Task, CreateTaskInput, UpdateTaskInput } from "../types";
+import { UI_LABELS } from "@/constants/ui.constants";
 
 interface TaskState {
   tasks: Task[];
@@ -25,7 +26,7 @@ export const useTaskStore = create<TaskState>()((set, get) => ({
         const tasks = await TaskService.getTasks();
         set({ tasks, loading: false });
       } catch (err: unknown) {
-        const message = err instanceof Error ? err.message : "Failed to load tasks.";
+        const message = err instanceof Error ? err.message : UI_LABELS.TASK.ERROR.LOAD;
         set({ error: message, loading: false });
       }
     },
@@ -38,7 +39,7 @@ export const useTaskStore = create<TaskState>()((set, get) => ({
           loading: false,
         }));
       } catch (err: unknown) {
-        const message = err instanceof Error ? err.message : "Failed to create task.";
+        const message = err instanceof Error ? err.message : UI_LABELS.TASK.ERROR.CREATE;
         set({ error: message, loading: false });
         throw err;
       }
@@ -65,7 +66,7 @@ export const useTaskStore = create<TaskState>()((set, get) => ({
         await TaskService.updateTask(id, input);
       } catch (err: unknown) {
         // Rollback
-        const message = err instanceof Error ? err.message : "Failed to update task.";
+        const message = err instanceof Error ? err.message : UI_LABELS.TASK.ERROR.UPDATE;
         set({ tasks: previousTasks, error: message });
         throw err;
       }
@@ -81,7 +82,7 @@ export const useTaskStore = create<TaskState>()((set, get) => ({
         await TaskService.deleteTask(id);
       } catch (err: unknown) {
         // Rollback
-        const message = err instanceof Error ? err.message : "Failed to delete task.";
+        const message = err instanceof Error ? err.message : UI_LABELS.TASK.ERROR.DELETE;
         set({ tasks: previousTasks, error: message });
         throw err;
       }
