@@ -3,6 +3,7 @@ import { LoginPage } from "@/pages/login";
 import { DashboardPage } from "@/pages/dashboard";
 import { BoardPage } from "@/pages/board";
 import { ProfilePage } from "@/pages/profile";
+import { SettingsPage } from "@/pages/settings";
 import { ProtectedRoute } from "@/components/common/protected-route";
 import { PublicRoute } from "@/components/common/public-route";
 import { AppLayout } from "@/components/layout/app-layout";
@@ -49,6 +50,16 @@ export function App(): React.JSX.Element {
             <ProtectedRoute>
               <AppLayout>
                 <ProfilePage />
+              </AppLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path={APP_ROUTES.SETTINGS}
+          element={
+            <ProtectedRoute>
+              <AppLayout>
+                <SettingsPage />
               </AppLayout>
             </ProtectedRoute>
           }

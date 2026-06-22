@@ -20,6 +20,8 @@ export function Header(): React.JSX.Element {
         return UI_LABELS.HEADER.KANBAN_BOARD;
       case APP_ROUTES.PROFILE:
         return UI_LABELS.HEADER.USER_PROFILE;
+      case APP_ROUTES.SETTINGS:
+        return UI_LABELS.HEADER.SETTINGS;
       default:
         return UI_LABELS.HEADER.WORKSPACE;
     }

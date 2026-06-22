@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { LayoutDashboard, Kanban, User, ChevronLeft, ChevronRight, HardDrive } from "lucide-react";
+import { LayoutDashboard, Kanban, User, ChevronLeft, ChevronRight, HardDrive, Settings } from "lucide-react";
 import { useSidebarOpen, useUiActions } from "@/store/ui.store";
 import { APP_ROUTES } from "@/constants/route.constants";
 import { UI_LABELS } from "@/constants/ui.constants";
@@ -12,6 +12,7 @@ export function Sidebar(): React.JSX.Element {
     { name: UI_LABELS.SIDEBAR.DASHBOARD, path: APP_ROUTES.DASHBOARD, icon: LayoutDashboard },
     { name: UI_LABELS.SIDEBAR.KANBAN_BOARD, path: APP_ROUTES.BOARD, icon: Kanban },
     { name: UI_LABELS.SIDEBAR.PROFILE, path: APP_ROUTES.PROFILE, icon: User },
+    { name: UI_LABELS.SIDEBAR.SETTINGS, path: APP_ROUTES.SETTINGS, icon: Settings },
   ];
 
   return (

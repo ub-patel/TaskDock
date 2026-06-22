@@ -3,4 +3,5 @@ export const APP_ROUTES = {
   DASHBOARD: "/dashboard",
   BOARD: "/board",
   PROFILE: "/profile",
+  SETTINGS: "/settings",
 } as const;

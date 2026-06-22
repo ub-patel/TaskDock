@@ -112,6 +112,7 @@ export const UI_LABELS = {
     DASHBOARD: "Dashboard",
     KANBAN_BOARD: "Kanban Board",
     PROFILE: "Profile",
+    SETTINGS: "Settings",
     COLLAPSE: "Collapse Sidebar",
     EXPAND: "Expand Sidebar",
   },
@@ -119,8 +120,15 @@ export const UI_LABELS = {
     DASHBOARD: "Dashboard",
     KANBAN_BOARD: "Kanban Board",
     USER_PROFILE: "User Profile",
+    SETTINGS: "Settings",
     WORKSPACE: "Workspace",
     DEFAULT_USER: "Workspace User",
     SIGN_OUT: "Sign Out",
+  },
+  SETTINGS: {
+    TITLE: "Workspace Settings",
+    SUBTITLE: "Configure and customize your task management environment.",
+    THEME_TITLE: "Theme Customization",
+    THEME_DESC: "Select a primary accent color for your workspace buttons, active navigation elements, and badges.",
   },
 } as const;
