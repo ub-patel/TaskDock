@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 import { APP_ROUTES } from "@/constants/route.constants";
 import { useAuthUser } from "@/store/auth.store";
 import { UI_LABELS } from "@/constants/ui.constants";
@@ -10,8 +11,12 @@ export function ProfilePage(): React.JSX.Element {
     <div className="p-8 max-w-2xl mx-auto text-foreground">
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-3xl font-bold">{UI_LABELS.PROFILE.TITLE}</h1>
-        <Link to={APP_ROUTES.DASHBOARD} className="text-sm text-primary hover:underline">
-          &larr; {UI_LABELS.COMMON.BACK_TO_DASHBOARD}
+        <Link
+          to={APP_ROUTES.DASHBOARD}
+          className="text-sm text-primary hover:underline inline-flex items-center space-x-1"
+        >
+          <ArrowLeft size={14} />
+          <span>{UI_LABELS.COMMON.BACK_TO_DASHBOARD}</span>
         </Link>
       </div>
 

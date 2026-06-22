@@ -1,4 +1,4 @@
-import { Search, Plus } from "lucide-react";
+import { Search, Plus, ChevronDown } from "lucide-react";
 import { UI_LABELS } from "@/constants/ui.constants";
 
 interface TaskToolbarProps {
@@ -43,41 +43,50 @@ export function TaskToolbar({
       {/* Selectors and Action Buttons */}
       <div className="flex flex-wrap items-center gap-3">
         {/* Status Filter */}
-        <select
-          value={statusFilter}
-          onChange={(e) => onStatusChange(e.target.value)}
-          className="px-3 py-2 bg-secondary/25 border border-border focus:border-primary rounded-md outline-none text-xs text-white transition"
-        >
-          <option value="ALL" className="bg-zinc-900">{UI_LABELS.TASK.TOOLBAR.FILTER_STATUS}</option>
-          <option value="TO_DO" className="bg-zinc-900">{UI_LABELS.TASK.STATUS.TO_DO}</option>
-          <option value="IN_PROGRESS" className="bg-zinc-900">{UI_LABELS.TASK.STATUS.IN_PROGRESS}</option>
-          <option value="COMPLETED" className="bg-zinc-900">{UI_LABELS.TASK.STATUS.COMPLETED}</option>
-        </select>
+        <div className="relative">
+          <select
+            value={statusFilter}
+            onChange={(e) => onStatusChange(e.target.value)}
+            className="appearance-none pl-3 pr-8 py-2 bg-secondary/25 border border-border focus:border-primary rounded-md outline-none text-xs text-white transition cursor-pointer"
+          >
+            <option value="ALL" className="bg-zinc-900">{UI_LABELS.TASK.TOOLBAR.FILTER_STATUS}</option>
+            <option value="TO_DO" className="bg-zinc-900">{UI_LABELS.TASK.STATUS.TO_DO}</option>
+            <option value="IN_PROGRESS" className="bg-zinc-900">{UI_LABELS.TASK.STATUS.IN_PROGRESS}</option>
+            <option value="COMPLETED" className="bg-zinc-900">{UI_LABELS.TASK.STATUS.COMPLETED}</option>
+          </select>
+          <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground" size={14} />
+        </div>
 
         {/* Priority Filter */}
-        <select
-          value={priorityFilter}
-          onChange={(e) => onPriorityChange(e.target.value)}
-          className="px-3 py-2 bg-secondary/25 border border-border focus:border-primary rounded-md outline-none text-xs text-white transition"
-        >
-          <option value="ALL" className="bg-zinc-900">{UI_LABELS.TASK.TOOLBAR.FILTER_PRIORITY}</option>
-          <option value="LOW" className="bg-zinc-900">{UI_LABELS.TASK.PRIORITY.LOW}</option>
-          <option value="MEDIUM" className="bg-zinc-900">{UI_LABELS.TASK.PRIORITY.MEDIUM}</option>
-          <option value="HIGH" className="bg-zinc-900">{UI_LABELS.TASK.PRIORITY.HIGH}</option>
-        </select>
+        <div className="relative">
+          <select
+            value={priorityFilter}
+            onChange={(e) => onPriorityChange(e.target.value)}
+            className="appearance-none pl-3 pr-8 py-2 bg-secondary/25 border border-border focus:border-primary rounded-md outline-none text-xs text-white transition cursor-pointer"
+          >
+            <option value="ALL" className="bg-zinc-900">{UI_LABELS.TASK.TOOLBAR.FILTER_PRIORITY}</option>
+            <option value="LOW" className="bg-zinc-900">{UI_LABELS.TASK.PRIORITY.LOW}</option>
+            <option value="MEDIUM" className="bg-zinc-900">{UI_LABELS.TASK.PRIORITY.MEDIUM}</option>
+            <option value="HIGH" className="bg-zinc-900">{UI_LABELS.TASK.PRIORITY.HIGH}</option>
+          </select>
+          <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground" size={14} />
+        </div>
 
         {/* Sorting Dropdown */}
         <div className="flex items-center space-x-2 text-xs">
           <span className="text-muted-foreground whitespace-nowrap">{UI_LABELS.TASK.TOOLBAR.SORT_BY}:</span>
-          <select
-            value={sortBy}
-            onChange={(e) => onSortByChange(e.target.value)}
-            className="px-3 py-2 bg-secondary/25 border border-border focus:border-primary rounded-md outline-none text-xs text-white transition"
-          >
-            <option value="created_at" className="bg-zinc-900">{UI_LABELS.TASK.TOOLBAR.SORT_CREATED_AT}</option>
-            <option value="due_date" className="bg-zinc-900">{UI_LABELS.TASK.TOOLBAR.SORT_DUE_DATE}</option>
-            <option value="priority" className="bg-zinc-900">{UI_LABELS.TASK.TOOLBAR.SORT_PRIORITY}</option>
-          </select>
+          <div className="relative">
+            <select
+              value={sortBy}
+              onChange={(e) => onSortByChange(e.target.value)}
+              className="appearance-none pl-3 pr-8 py-2 bg-secondary/25 border border-border focus:border-primary rounded-md outline-none text-xs text-white transition cursor-pointer"
+            >
+              <option value="created_at" className="bg-zinc-900">{UI_LABELS.TASK.TOOLBAR.SORT_CREATED_AT}</option>
+              <option value="due_date" className="bg-zinc-900">{UI_LABELS.TASK.TOOLBAR.SORT_DUE_DATE}</option>
+              <option value="priority" className="bg-zinc-900">{UI_LABELS.TASK.TOOLBAR.SORT_PRIORITY}</option>
+            </select>
+            <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground" size={14} />
+          </div>
         </div>
 
         {/* Add Task Trigger */}

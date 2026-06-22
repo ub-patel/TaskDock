@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
 import { APP_ROUTES } from "@/constants/route.constants";
 import { UI_LABELS } from "@/constants/ui.constants";
 
@@ -20,8 +21,12 @@ export function DashboardPage(): React.JSX.Element {
         <div className="p-6 bg-card border border-border rounded-lg">
           <h2 className="text-xl font-semibold mb-2">{UI_LABELS.DASHBOARD.PROFILE_CARD_TITLE}</h2>
           <p className="text-sm text-muted-foreground mb-4">{UI_LABELS.DASHBOARD.PROFILE_CARD_DESC}</p>
-          <Link to={APP_ROUTES.PROFILE} className="inline-block text-primary hover:underline text-sm">
-            {UI_LABELS.DASHBOARD.PROFILE_CARD_LINK} &rarr;
+          <Link
+            to={APP_ROUTES.PROFILE}
+            className="inline-flex items-center space-x-1 text-primary hover:underline text-sm"
+          >
+            <span>{UI_LABELS.DASHBOARD.PROFILE_CARD_LINK}</span>
+            <ArrowRight size={14} />
           </Link>
         </div>
       </div>

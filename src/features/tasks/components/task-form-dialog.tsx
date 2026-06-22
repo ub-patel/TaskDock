@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { X } from "lucide-react";
+import { X, ChevronDown } from "lucide-react";
 import { taskSchema, type TaskFormValues } from "../task.schema";
 import { useTaskActions, useTasks } from "@/store/task.store";
 import { useAuthUser } from "@/store/auth.store";
@@ -144,15 +144,18 @@ export function TaskFormDialog({
               <label className="text-xs font-semibold text-muted-foreground uppercase" htmlFor="task-priority">
                 {UI_LABELS.TASK.FORM.LABEL_PRIORITY}
               </label>
-              <select
-                id="task-priority"
-                className="w-full px-4 py-2 bg-secondary/25 border border-border focus:border-primary rounded-md outline-none text-sm transition text-white"
-                {...register("priority")}
-              >
-                <option value="LOW" className="bg-zinc-900">{UI_LABELS.TASK.PRIORITY.LOW}</option>
-                <option value="MEDIUM" className="bg-zinc-900">{UI_LABELS.TASK.PRIORITY.MEDIUM}</option>
-                <option value="HIGH" className="bg-zinc-900">{UI_LABELS.TASK.PRIORITY.HIGH}</option>
-              </select>
+              <div className="relative">
+                <select
+                  id="task-priority"
+                  className="w-full pl-4 pr-10 py-2 bg-secondary/25 border border-border focus:border-primary rounded-md outline-none text-sm transition text-white appearance-none cursor-pointer"
+                  {...register("priority")}
+                >
+                  <option value="LOW" className="bg-zinc-900">{UI_LABELS.TASK.PRIORITY.LOW}</option>
+                  <option value="MEDIUM" className="bg-zinc-900">{UI_LABELS.TASK.PRIORITY.MEDIUM}</option>
+                  <option value="HIGH" className="bg-zinc-900">{UI_LABELS.TASK.PRIORITY.HIGH}</option>
+                </select>
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground" size={16} />
+              </div>
             </div>
 
             {/* Status */}
@@ -160,15 +163,18 @@ export function TaskFormDialog({
               <label className="text-xs font-semibold text-muted-foreground uppercase" htmlFor="task-status">
                 {UI_LABELS.TASK.FORM.LABEL_STATUS}
               </label>
-              <select
-                id="task-status"
-                className="w-full px-4 py-2 bg-secondary/25 border border-border focus:border-primary rounded-md outline-none text-sm transition text-white"
-                {...register("status")}
-              >
-                <option value="TO_DO" className="bg-zinc-900">{UI_LABELS.TASK.STATUS.TO_DO}</option>
-                <option value="IN_PROGRESS" className="bg-zinc-900">{UI_LABELS.TASK.STATUS.IN_PROGRESS}</option>
-                <option value="COMPLETED" className="bg-zinc-900">{UI_LABELS.TASK.STATUS.COMPLETED}</option>
-              </select>
+              <div className="relative">
+                <select
+                  id="task-status"
+                  className="w-full pl-4 pr-10 py-2 bg-secondary/25 border border-border focus:border-primary rounded-md outline-none text-sm transition text-white appearance-none cursor-pointer"
+                  {...register("status")}
+                >
+                  <option value="TO_DO" className="bg-zinc-900">{UI_LABELS.TASK.STATUS.TO_DO}</option>
+                  <option value="IN_PROGRESS" className="bg-zinc-900">{UI_LABELS.TASK.STATUS.IN_PROGRESS}</option>
+                  <option value="COMPLETED" className="bg-zinc-900">{UI_LABELS.TASK.STATUS.COMPLETED}</option>
+                </select>
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground" size={16} />
+              </div>
             </div>
           </div>
 
