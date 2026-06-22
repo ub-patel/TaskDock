@@ -59,7 +59,7 @@ export function Sidebar(): React.JSX.Element {
         <button
           onClick={toggleSidebar}
           className="p-1.5 rounded-md hover:bg-secondary/40 text-muted-foreground hover:text-white transition"
-          aria-label={isOpen ? "Collapse Sidebar" : "Expand Sidebar"}
+          aria-label={isOpen ? UI_LABELS.SIDEBAR.COLLAPSE : UI_LABELS.SIDEBAR.EXPAND}
         >
           {isOpen ? <ChevronLeft size={18} /> : <ChevronRight size={18} />}
         </button>

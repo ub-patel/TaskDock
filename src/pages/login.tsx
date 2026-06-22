@@ -30,8 +30,9 @@ export function LoginPage(): React.JSX.Element {
     setIsSubmitting(true);
     try {
       await AuthService.signIn(values);
-    } catch (err: any) {
-      setAuthError(err.message || UI_LABELS.AUTH.ERROR_LOGIN);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : UI_LABELS.AUTH.ERROR_LOGIN;
+      setAuthError(message);
     } finally {
       setIsSubmitting(false);
     }
@@ -45,8 +46,9 @@ export function LoginPage(): React.JSX.Element {
       setAuthError(UI_LABELS.AUTH.SUCCESS_SIGNUP);
       setIsSignUp(false);
       signupForm.reset();
-    } catch (err: any) {
-      setAuthError(err.message || UI_LABELS.AUTH.ERROR_SIGNUP);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : UI_LABELS.AUTH.ERROR_SIGNUP;
+      setAuthError(message);
     } finally {
       setIsSubmitting(false);
     }

@@ -59,7 +59,7 @@ export function Header(): React.JSX.Element {
           onClick={handleLogout}
           disabled={isLoggingOut}
           className="p-2 rounded-md border border-border bg-zinc-900 text-muted-foreground hover:text-rose-400 hover:border-rose-500/20 transition-colors disabled:opacity-50"
-          title="Sign Out"
+          title={UI_LABELS.HEADER.SIGN_OUT}
         >
           {isLoggingOut ? (
             <div className="w-4 h-4 border-2 border-muted-foreground border-t-transparent rounded-full animate-spin"></div>
