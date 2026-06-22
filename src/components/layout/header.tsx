@@ -4,27 +4,28 @@ import { LogOut, User } from "lucide-react";
 import { useAuthUser } from "@/store/auth.store";
 import { AuthService } from "@/services/auth.service";
 import { APP_ROUTES } from "@/constants/route.constants";
+import { UI_LABELS } from "@/constants/ui.constants";
 
-export function Header() {
+export function Header(): React.JSX.Element {
   const location = useLocation();
   const user = useAuthUser();
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState<boolean>(false);
 
   // Dynamic route titles
-  const getPageTitle = () => {
+  const getPageTitle = (): string => {
     switch (location.pathname) {
       case APP_ROUTES.DASHBOARD:
-        return "Dashboard";
+        return UI_LABELS.HEADER.DASHBOARD;
       case APP_ROUTES.BOARD:
-        return "Kanban Board";
+        return UI_LABELS.HEADER.KANBAN_BOARD;
       case APP_ROUTES.PROFILE:
-        return "User Profile";
+        return UI_LABELS.HEADER.USER_PROFILE;
       default:
-        return "Workspace";
+        return UI_LABELS.HEADER.WORKSPACE;
     }
   };
 
-  const handleLogout = async () => {
+  const handleLogout = async (): Promise<void> => {
     setIsLoggingOut(true);
     try {
       await AuthService.signOut();
@@ -44,7 +45,7 @@ export function Header() {
         <div className="hidden sm:flex items-center space-x-2 text-right">
           <div className="text-xs">
             <p className="font-semibold text-white">
-              {user?.user_metadata?.full_name || "Workspace User"}
+              {user?.user_metadata?.full_name || UI_LABELS.HEADER.DEFAULT_USER}
             </p>
             <p className="text-muted-foreground">{user?.email}</p>
           </div>

@@ -8,7 +8,7 @@ import { PublicRoute } from "@/components/common/public-route";
 import { AppLayout } from "@/components/layout/app-layout";
 import { APP_ROUTES } from "@/constants/route.constants";
 
-export function App() {
+export function App(): React.JSX.Element {
   return (
     <BrowserRouter>
       <Routes>

@@ -1,30 +1,17 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { LogIn, UserPlus, Eye, EyeOff } from "lucide-react";
 import { AuthService } from "@/services/auth.service";
+import { UI_LABELS } from "@/constants/ui.constants";
+import { loginSchema, signupSchema } from "@/features/auth/auth.schema";
+import type { LoginFormValues, SignupFormValues } from "@/features/auth/auth.schema";
 
-// Since we toggle, let's create a dynamic validator based on a toggle state
-const loginSchema = z.object({
-  email: z.string().min(1, "Email is required").email("Invalid email format"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-});
-
-const signupSchema = z.object({
-  fullName: z.string().min(2, "Full name must be at least 2 characters"),
-  email: z.string().min(1, "Email is required").email("Invalid email format"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-});
-
-type LoginFormValues = z.infer<typeof loginSchema>;
-type SignupFormValues = z.infer<typeof signupSchema>;
-
-export function LoginPage() {
-  const [isSignUp, setIsSignUp] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
+export function LoginPage(): React.JSX.Element {
+  const [isSignUp, setIsSignUp] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
   const [authError, setAuthError] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   // Initialize Login Form
   const loginForm = useForm<LoginFormValues>({
@@ -38,29 +25,28 @@ export function LoginPage() {
     defaultValues: { fullName: "", email: "", password: "" },
   });
 
-  const onLoginSubmit = async (values: LoginFormValues) => {
+  const onLoginSubmit = async (values: LoginFormValues): Promise<void> => {
     setAuthError(null);
     setIsSubmitting(true);
     try {
       await AuthService.signIn(values);
-      // Main.tsx will handle the redirect because the auth session updates globally
     } catch (err: any) {
-      setAuthError(err.message || "Invalid email or password.");
+      setAuthError(err.message || UI_LABELS.AUTH.ERROR_LOGIN);
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const onSignupSubmit = async (values: SignupFormValues) => {
+  const onSignupSubmit = async (values: SignupFormValues): Promise<void> => {
     setAuthError(null);
     setIsSubmitting(true);
     try {
       await AuthService.signUp(values);
-      setAuthError("Account created! Please check your email for verification.");
+      setAuthError(UI_LABELS.AUTH.SUCCESS_SIGNUP);
       setIsSignUp(false);
       signupForm.reset();
     } catch (err: any) {
-      setAuthError(err.message || "Failed to create account.");
+      setAuthError(err.message || UI_LABELS.AUTH.ERROR_SIGNUP);
     } finally {
       setIsSubmitting(false);
     }
@@ -76,13 +62,13 @@ export function LoginPage() {
 
         <div className="relative z-10 max-w-lg text-center space-y-6">
           <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full border border-primary/20 bg-primary/5 text-primary text-xs tracking-wider uppercase font-semibold">
-            🚀 The Workspace Ecosystem
+            {UI_LABELS.AUTH.WORKSPACE_ECOSYSTEM}
           </div>
           <h1 className="text-5xl font-extrabold tracking-tight text-white">
-            TaskDock
+            {UI_LABELS.COMMON.APP_NAME}
           </h1>
           <p className="text-lg text-muted-foreground font-medium leading-relaxed">
-            Dock Your Tasks. Drive Your Progress.
+            {UI_LABELS.COMMON.TAGLINE}
           </p>
           <div className="pt-8 flex justify-center">
             {/* Visual placeholder box simulating the dashboard layout */}
@@ -107,12 +93,10 @@ export function LoginPage() {
         <div className="w-full max-w-md space-y-8">
           <div className="text-center">
             <h2 className="text-3xl font-extrabold tracking-tight text-white">
-              {isSignUp ? "Create Workspace" : "Welcome Back"}
+              {isSignUp ? UI_LABELS.AUTH.CREATE_WORKSPACE : UI_LABELS.AUTH.WELCOME_BACK}
             </h2>
             <p className="mt-2 text-sm text-muted-foreground">
-              {isSignUp
-                ? "Get started with your productivity platform today"
-                : "Sign in to manage and drive your progress"}
+              {isSignUp ? UI_LABELS.AUTH.SIGNUP_SUBTITLE : UI_LABELS.AUTH.LOGIN_SUBTITLE}
             </p>
           </div>
 
@@ -121,7 +105,7 @@ export function LoginPage() {
             {authError && (
               <div
                 className={`p-3 rounded text-sm text-center ${
-                  authError.includes("check your email")
+                  authError.includes("check your email") || authError.includes("verification")
                     ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
                     : "bg-destructive/10 text-destructive-foreground border border-destructive/20"
                 }`}
@@ -135,7 +119,7 @@ export function LoginPage() {
               <form onSubmit={signupForm.handleSubmit(onSignupSubmit)} className="space-y-4">
                 <div className="space-y-1">
                   <label className="text-xs font-semibold text-muted-foreground uppercase" htmlFor="signup-name">
-                    Full Name
+                    {UI_LABELS.AUTH.FIELD_NAME}
                   </label>
                   <input
                     id="signup-name"
@@ -150,7 +134,7 @@ export function LoginPage() {
 
                 <div className="space-y-1">
                   <label className="text-xs font-semibold text-muted-foreground uppercase" htmlFor="signup-email">
-                    Email Address
+                    {UI_LABELS.AUTH.FIELD_EMAIL}
                   </label>
                   <input
                     id="signup-email"
@@ -166,7 +150,7 @@ export function LoginPage() {
 
                 <div className="space-y-1">
                   <label className="text-xs font-semibold text-muted-foreground uppercase" htmlFor="signup-password">
-                    Password
+                    {UI_LABELS.AUTH.FIELD_PASSWORD}
                   </label>
                   <div className="relative">
                     <input
@@ -199,7 +183,7 @@ export function LoginPage() {
                   ) : (
                     <>
                       <UserPlus size={16} />
-                      <span>Sign Up</span>
+                      <span>{UI_LABELS.AUTH.SIGN_UP}</span>
                     </>
                   )}
                 </button>
@@ -208,7 +192,7 @@ export function LoginPage() {
               <form onSubmit={loginForm.handleSubmit(onLoginSubmit)} className="space-y-4">
                 <div className="space-y-1">
                   <label className="text-xs font-semibold text-muted-foreground uppercase" htmlFor="login-email">
-                    Email Address
+                    {UI_LABELS.AUTH.FIELD_EMAIL}
                   </label>
                   <input
                     id="login-email"
@@ -224,7 +208,7 @@ export function LoginPage() {
 
                 <div className="space-y-1">
                   <label className="text-xs font-semibold text-muted-foreground uppercase" htmlFor="login-password">
-                    Password
+                    {UI_LABELS.AUTH.FIELD_PASSWORD}
                   </label>
                   <div className="relative">
                     <input
@@ -257,7 +241,7 @@ export function LoginPage() {
                   ) : (
                     <>
                       <LogIn size={16} />
-                      <span>Log In</span>
+                      <span>{UI_LABELS.AUTH.LOG_IN}</span>
                     </>
                   )}
                 </button>
@@ -273,7 +257,7 @@ export function LoginPage() {
                 }}
                 className="text-xs text-primary hover:underline"
               >
-                {isSignUp ? "Already have an account? Log In" : "Need a workspace? Create an account"}
+                {isSignUp ? UI_LABELS.AUTH.TO_LOGIN_LINK : UI_LABELS.AUTH.TO_SIGNUP_LINK}
               </button>
             </div>
           </div>

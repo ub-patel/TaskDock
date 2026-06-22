@@ -16,5 +16,6 @@ export const useUiStore = create<UiState>()((set) => ({
   },
 }));
 
-export const useSidebarOpen = () => useUiStore((state) => state.sidebarOpen);
-export const useUiActions = () => useUiStore((state) => state.actions);
+// Selectors with explicit return types
+export const useSidebarOpen = (): boolean => useUiStore((state) => state.sidebarOpen);
+export const useUiActions = (): UiState["actions"] => useUiStore((state) => state.actions);

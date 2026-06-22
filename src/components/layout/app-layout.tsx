@@ -1,12 +1,9 @@
 import { Sidebar } from "./sidebar";
 import { Header } from "./header";
 import { useSidebarOpen } from "@/store/ui.store";
+import type { ChildrenProps } from "@/types";
 
-interface AppLayoutProps {
-  children: React.ReactNode;
-}
-
-export function AppLayout({ children }: AppLayoutProps) {
+export function AppLayout({ children }: ChildrenProps): React.JSX.Element {
   const isSidebarOpen = useSidebarOpen();
 
   return (

@@ -1,30 +1,40 @@
 import { Link } from "react-router-dom";
 import { APP_ROUTES } from "@/constants/route.constants";
+import { useAuthUser } from "@/store/auth.store";
+import { UI_LABELS } from "@/constants/ui.constants";
 
-export function ProfilePage() {
+export function ProfilePage(): React.JSX.Element {
+  const user = useAuthUser();
+
   return (
     <div className="p-8 max-w-2xl mx-auto text-foreground">
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-3xl font-bold">User Profile</h1>
+        <h1 className="text-3xl font-bold">{UI_LABELS.PROFILE.TITLE}</h1>
         <Link to={APP_ROUTES.DASHBOARD} className="text-sm text-primary hover:underline">
-          &larr; Back to Dashboard
+          &larr; {UI_LABELS.COMMON.BACK_TO_DASHBOARD}
         </Link>
       </div>
 
       <div className="p-6 bg-card border border-border rounded-lg shadow-sm space-y-6">
         <div className="flex items-center space-x-4">
           <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center font-bold text-xl text-primary">
-            U
+            {(user?.user_metadata?.full_name || UI_LABELS.PROFILE.DEFAULT_USER_NAME)[0].toUpperCase()}
           </div>
           <div>
-            <h2 className="text-xl font-semibold">Demo User</h2>
-            <p className="text-sm text-muted-foreground">user@example.com</p>
+            <h2 className="text-xl font-semibold">
+              {user?.user_metadata?.full_name || UI_LABELS.PROFILE.DEFAULT_USER_NAME}
+            </h2>
+            <p className="text-sm text-muted-foreground">
+              {user?.email || UI_LABELS.PROFILE.DEFAULT_USER_EMAIL}
+            </p>
           </div>
         </div>
 
         <div className="border-t border-border pt-4">
-          <h3 className="text-sm font-medium text-muted-foreground mb-2">Account Statistics</h3>
-          <p className="text-sm">Statistics widgets will be integrated in Phase 4.</p>
+          <h3 className="text-sm font-medium text-muted-foreground mb-2">
+            {UI_LABELS.PROFILE.STATS_HEADER}
+          </h3>
+          <p className="text-sm">{UI_LABELS.PROFILE.STATS_PLACEHOLDER}</p>
         </div>
       </div>
     </div>

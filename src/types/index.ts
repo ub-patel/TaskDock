@@ -1,3 +1,9 @@
+import type { ReactNode } from "react";
+
+export interface ChildrenProps {
+  children: ReactNode;
+}
+
 export interface AuthInput {
   email: string;
   password: string;
