@@ -36,7 +36,6 @@ interface UiState {
 export const useUiStore = create<UiState>()((set) => {
   const savedTheme = localStorage.getItem("taskdock-theme") || "blue";
 
-  // Initialize theme on store creation
   setTimeout(() => applyTheme(savedTheme), 0);
 
   return {
@@ -53,7 +52,6 @@ export const useUiStore = create<UiState>()((set) => {
   };
 });
 
-// Selectors with explicit return types
 export const useSidebarOpen = (): boolean => useUiStore((state) => state.sidebarOpen);
 export const useCurrentTheme = (): string => useUiStore((state) => state.theme);
 export const useUiActions = (): UiState["actions"] => useUiStore((state) => state.actions);

@@ -1,8 +1,9 @@
 import { Link } from "react-router-dom";
 import { ArrowLeft, Check } from "lucide-react";
-import { APP_ROUTES } from "@/constants/route.constants";
-import { UI_LABELS } from "@/constants/ui.constants";
+import { APP_ROUTES, UI_LABELS } from "@/constants";
 import { useCurrentTheme, useUiActions, THEME_OPTIONS } from "@/store/ui.store";
+import { Card } from "@/components/shared";
+
 
 export function SettingsPage(): React.JSX.Element {
   const currentTheme = useCurrentTheme();
@@ -10,7 +11,6 @@ export function SettingsPage(): React.JSX.Element {
 
   return (
     <div className="p-8 max-w-4xl mx-auto text-foreground space-y-6 animate-fade-in">
-      {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div className="flex flex-col space-y-1">
           <h1 className="text-3xl font-bold text-white tracking-tight">
@@ -29,8 +29,7 @@ export function SettingsPage(): React.JSX.Element {
         </Link>
       </div>
 
-      {/* Main Settings Card */}
-      <div className="p-6 bg-zinc-900 border border-border rounded-xl shadow-lg space-y-6">
+      <Card className="p-6 space-y-6">
         <div className="border-b border-border/80 pb-4">
           <h2 className="text-xl font-semibold text-white">
             {UI_LABELS.SETTINGS.THEME_TITLE}
@@ -40,7 +39,6 @@ export function SettingsPage(): React.JSX.Element {
           </p>
         </div>
 
-        {/* Theme Swatches Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           {THEME_OPTIONS.map((theme) => {
             const isActive = currentTheme === theme.id;
@@ -55,7 +53,6 @@ export function SettingsPage(): React.JSX.Element {
                 }`}
               >
                 <div className="flex items-center space-x-3">
-                  {/* Swatch Color Circle */}
                   <div
                     className="w-5 h-5 rounded-full border border-white/10 shrink-0"
                     style={{ backgroundColor: theme.primary }}
@@ -76,7 +73,7 @@ export function SettingsPage(): React.JSX.Element {
             );
           })}
         </div>
-      </div>
+      </Card>
     </div>
   );
 }

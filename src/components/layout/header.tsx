@@ -2,16 +2,15 @@ import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { LogOut, User } from "lucide-react";
 import { useAuthUser } from "@/store/auth.store";
-import { AuthService } from "@/services/auth.service";
-import { APP_ROUTES } from "@/constants/route.constants";
-import { UI_LABELS } from "@/constants/ui.constants";
+import { AuthService } from "@/services";
+import { APP_ROUTES, UI_LABELS } from "@/constants";
+
 
 export function Header(): React.JSX.Element {
   const location = useLocation();
   const user = useAuthUser();
   const [isLoggingOut, setIsLoggingOut] = useState<boolean>(false);
 
-  // Dynamic route titles
   const getPageTitle = (): string => {
     switch (location.pathname) {
       case APP_ROUTES.DASHBOARD:
@@ -43,7 +42,6 @@ export function Header(): React.JSX.Element {
       <h2 className="text-xl font-bold text-white tracking-tight">{getPageTitle()}</h2>
 
       <div className="flex items-center space-x-4">
-        {/* User Info */}
         <div className="hidden sm:flex items-center space-x-2 text-right">
           <div className="text-xs">
             <p className="font-semibold text-white">
@@ -56,7 +54,6 @@ export function Header(): React.JSX.Element {
           </div>
         </div>
 
-        {/* Logout Button */}
         <button
           onClick={handleLogout}
           disabled={isLoggingOut}

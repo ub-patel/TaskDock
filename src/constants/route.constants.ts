@@ -4,4 +4,7 @@ export const APP_ROUTES = {
   BOARD: "/board",
   PROFILE: "/profile",
   SETTINGS: "/settings",
+  UNAUTHORIZED: "/unauthorized",
+  NOT_FOUND: "/404",
 } as const;
+

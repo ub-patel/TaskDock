@@ -19,7 +19,6 @@ export const useAuthStore = create<AuthState>()((set) => ({
   },
 }));
 
-// Export hooks for selectors with explicit return types
 export const useAuthUser = (): User | null => useAuthStore((state) => state.user);
 export const useAuthLoading = (): boolean => useAuthStore((state) => state.loading);
 export const useAuthActions = (): AuthState["actions"] => useAuthStore((state) => state.actions);

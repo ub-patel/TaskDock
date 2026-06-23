@@ -23,7 +23,6 @@ export class TaskService {
 
     const dbTasks = (data || []) as DbTask[];
 
-    // Map database snake_case fields to camelCase
     return dbTasks.map((task) => ({
       id: task.id,
       userId: task.user_id,

@@ -131,4 +131,19 @@ export const UI_LABELS = {
     THEME_TITLE: "Theme Customization",
     THEME_DESC: "Select a primary accent color for your workspace buttons, active navigation elements, and badges.",
   },
+  NOT_FOUND: {
+    TITLE: "Lost in Space",
+    DESC: "The page you are looking for doesn't exist, has been moved, or resides in an uncharted territory. Let's get you back on track.",
+    GO_DASHBOARD: "Go to Dashboard",
+    GO_LOGIN: "Go to Login",
+    BRAND: "TaskDock Directory System",
+  },
+  UNAUTHORIZED: {
+    ERROR_CODE: "Error 403",
+    TITLE: "Access Restricted",
+    DESC: "You do not have credentials to view this page or your session holds insufficient permissions. If you believe this is an error, please try logging out and signing back in.",
+    BACK_DASHBOARD: "Back to Dashboard",
+    BACK_LOGIN: "Back to Login",
+    BRAND: "TaskDock Security Gateway",
+  },
 } as const;

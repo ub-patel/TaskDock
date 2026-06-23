@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { UI_LABELS } from "@/constants/ui.constants";
+import { UI_LABELS } from "@/constants";
+
 
 export const loginSchema = z.object({
   email: z

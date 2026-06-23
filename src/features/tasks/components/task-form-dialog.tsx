@@ -1,11 +1,12 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { X, ChevronDown } from "lucide-react";
 import { taskSchema, type TaskFormValues } from "../task.schema";
 import { useTaskActions, useTasks } from "@/store/task.store";
 import { useAuthUser } from "@/store/auth.store";
-import { UI_LABELS } from "@/constants/ui.constants";
+import { UI_LABELS } from "@/constants";
+import { Dialog, DialogHeader, DialogTitle, DialogBody, DialogFooter, Input, Textarea, Select, Button } from "@/components/shared";
+
 
 interface TaskFormDialogProps {
   isOpen: boolean;
@@ -41,7 +42,6 @@ export function TaskFormDialog({
     },
   });
 
-  // Reset form when modal opens or task changes
   useEffect(() => {
     if (isOpen) {
       if (isEditMode && taskToEdit) {
@@ -64,8 +64,6 @@ export function TaskFormDialog({
     }
   }, [isOpen, isEditMode, taskToEdit, reset]);
 
-  if (!isOpen) return null;
-
   const onSubmit = async (values: TaskFormValues): Promise<void> => {
     try {
       if (isEditMode && taskIdToEdit) {
@@ -80,145 +78,81 @@ export function TaskFormDialog({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
-        onClick={onClose}
-      ></div>
+    <Dialog isOpen={isOpen} onClose={onClose} size="md">
+      <DialogHeader onClose={onClose}>
+        <DialogTitle>
+          {isEditMode ? UI_LABELS.TASK.FORM.EDIT_TITLE : UI_LABELS.TASK.FORM.CREATE_TITLE}
+        </DialogTitle>
+      </DialogHeader>
 
-      {/* Content Card */}
-      <div className="relative w-full max-w-lg bg-zinc-900 border border-border rounded-xl shadow-2xl overflow-hidden z-10 flex flex-col">
-        {/* Header */}
-        <div className="h-14 flex items-center justify-between px-6 border-b border-border/80 bg-zinc-900/50">
-          <h3 className="font-bold text-lg text-white">
-            {isEditMode ? UI_LABELS.TASK.FORM.EDIT_TITLE : UI_LABELS.TASK.FORM.CREATE_TITLE}
-          </h3>
-          <button
-            onClick={onClose}
-            className="p-1.5 rounded-md hover:bg-secondary/40 text-muted-foreground hover:text-white transition"
-          >
-            <X size={18} />
-          </button>
-        </div>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <DialogBody className="space-y-4">
+          <Input
+            id="task-title"
+            label={UI_LABELS.TASK.FORM.LABEL_TITLE}
+            placeholder={UI_LABELS.TASK.FORM.PLACEHOLDER_TITLE}
+            error={errors.title?.message}
+            {...register("title")}
+          />
 
-        {/* Form Body */}
-        <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-4">
-          {/* Title */}
-          <div className="space-y-1">
-            <label className="text-xs font-semibold text-muted-foreground uppercase" htmlFor="task-title">
-              {UI_LABELS.TASK.FORM.LABEL_TITLE}
-            </label>
-            <input
-              id="task-title"
-              placeholder={UI_LABELS.TASK.FORM.PLACEHOLDER_TITLE}
-              className="w-full px-4 py-2 bg-secondary/20 border border-border focus:border-primary rounded-md outline-none text-sm transition text-white"
-              {...register("title")}
-            />
-            {errors.title && (
-              <span className="text-xs text-rose-500">{errors.title.message}</span>
-            )}
-          </div>
+          <Textarea
+            id="task-desc"
+            rows={3}
+            label={UI_LABELS.TASK.FORM.LABEL_DESC}
+            placeholder={UI_LABELS.TASK.FORM.PLACEHOLDER_DESC}
+            error={errors.description?.message}
+            {...register("description")}
+          />
 
-          {/* Description */}
-          <div className="space-y-1">
-            <label className="text-xs font-semibold text-muted-foreground uppercase" htmlFor="task-desc">
-              {UI_LABELS.TASK.FORM.LABEL_DESC}
-            </label>
-            <textarea
-              id="task-desc"
-              rows={3}
-              placeholder={UI_LABELS.TASK.FORM.PLACEHOLDER_DESC}
-              className="w-full px-4 py-2 bg-secondary/20 border border-border focus:border-primary rounded-md outline-none text-sm transition text-white resize-none"
-              {...register("description")}
-            />
-            {errors.description && (
-              <span className="text-xs text-rose-500">{errors.description.message}</span>
-            )}
-          </div>
-
-          {/* Grid fields: Priority, Status, DueDate */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {/* Priority */}
-            <div className="space-y-1">
-              <label className="text-xs font-semibold text-muted-foreground uppercase" htmlFor="task-priority">
-                {UI_LABELS.TASK.FORM.LABEL_PRIORITY}
-              </label>
-              <div className="relative">
-                <select
-                  id="task-priority"
-                  className="w-full pl-4 pr-10 py-2 bg-secondary/25 border border-border focus:border-primary rounded-md outline-none text-sm transition text-white appearance-none cursor-pointer"
-                  {...register("priority")}
-                >
-                  <option value="LOW" className="bg-zinc-900">{UI_LABELS.TASK.PRIORITY.LOW}</option>
-                  <option value="MEDIUM" className="bg-zinc-900">{UI_LABELS.TASK.PRIORITY.MEDIUM}</option>
-                  <option value="HIGH" className="bg-zinc-900">{UI_LABELS.TASK.PRIORITY.HIGH}</option>
-                </select>
-                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground" size={16} />
-              </div>
-            </div>
-
-            {/* Status */}
-            <div className="space-y-1">
-              <label className="text-xs font-semibold text-muted-foreground uppercase" htmlFor="task-status">
-                {UI_LABELS.TASK.FORM.LABEL_STATUS}
-              </label>
-              <div className="relative">
-                <select
-                  id="task-status"
-                  className="w-full pl-4 pr-10 py-2 bg-secondary/25 border border-border focus:border-primary rounded-md outline-none text-sm transition text-white appearance-none cursor-pointer"
-                  {...register("status")}
-                >
-                  <option value="TO_DO" className="bg-zinc-900">{UI_LABELS.TASK.STATUS.TO_DO}</option>
-                  <option value="IN_PROGRESS" className="bg-zinc-900">{UI_LABELS.TASK.STATUS.IN_PROGRESS}</option>
-                  <option value="COMPLETED" className="bg-zinc-900">{UI_LABELS.TASK.STATUS.COMPLETED}</option>
-                </select>
-                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground" size={16} />
-              </div>
-            </div>
-          </div>
-
-          {/* Due Date */}
-          <div className="space-y-1">
-            <label className="text-xs font-semibold text-muted-foreground uppercase" htmlFor="task-due-date">
-              {UI_LABELS.TASK.FORM.LABEL_DUE_DATE}
-            </label>
-            <input
-              id="task-due-date"
-              type="date"
-              className="w-full px-4 py-2 bg-secondary/20 border border-border focus:border-primary rounded-md outline-none text-sm transition text-white"
-              {...register("dueDate")}
-            />
-            {errors.dueDate && (
-              <span className="text-xs text-rose-500">{errors.dueDate.message}</span>
-            )}
-          </div>
-
-          {/* Actions Footer */}
-          <div className="flex items-center justify-end space-x-3 pt-4 border-t border-border/80">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 rounded-md border border-border text-sm font-medium hover:bg-secondary/40 text-muted-foreground hover:text-white transition"
+            <Select
+              id="task-priority"
+              label={UI_LABELS.TASK.FORM.LABEL_PRIORITY}
+              error={errors.priority?.message}
+              {...register("priority")}
             >
-              {UI_LABELS.TASK.FORM.CANCEL}
-            </button>
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="px-4 py-2 rounded-md bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/95 transition disabled:opacity-50 flex items-center justify-center"
+              <option value="LOW" className="bg-zinc-900">{UI_LABELS.TASK.PRIORITY.LOW}</option>
+              <option value="MEDIUM" className="bg-zinc-900">{UI_LABELS.TASK.PRIORITY.MEDIUM}</option>
+              <option value="HIGH" className="bg-zinc-900">{UI_LABELS.TASK.PRIORITY.HIGH}</option>
+            </Select>
+
+            <Select
+              id="task-status"
+              label={UI_LABELS.TASK.FORM.LABEL_STATUS}
+              error={errors.status?.message}
+              {...register("status")}
             >
-              {isSubmitting ? (
-                <div className="w-5 h-5 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin"></div>
-              ) : isEditMode ? (
-                UI_LABELS.TASK.FORM.SUBMIT_SAVE
-              ) : (
-                UI_LABELS.TASK.FORM.SUBMIT_CREATE
-              )}
-            </button>
+              <option value="TO_DO" className="bg-zinc-900">{UI_LABELS.TASK.STATUS.TO_DO}</option>
+              <option value="IN_PROGRESS" className="bg-zinc-900">{UI_LABELS.TASK.STATUS.IN_PROGRESS}</option>
+              <option value="COMPLETED" className="bg-zinc-900">{UI_LABELS.TASK.STATUS.COMPLETED}</option>
+            </Select>
           </div>
-        </form>
-      </div>
-    </div>
+
+          <Input
+            id="task-due-date"
+            type="date"
+            label={UI_LABELS.TASK.FORM.LABEL_DUE_DATE}
+            error={errors.dueDate?.message}
+            {...register("dueDate")}
+          />
+        </DialogBody>
+
+        <DialogFooter className="px-6 pb-6 pt-0">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onClose}
+          >
+            {UI_LABELS.TASK.FORM.CANCEL}
+          </Button>
+          <Button
+            type="submit"
+            isLoading={isSubmitting}
+          >
+            {isEditMode ? UI_LABELS.TASK.FORM.SUBMIT_SAVE : UI_LABELS.TASK.FORM.SUBMIT_CREATE}
+          </Button>
+        </DialogFooter>
+      </form>
+    </Dialog>
   );
 }

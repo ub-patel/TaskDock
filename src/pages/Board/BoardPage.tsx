@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
-import { TaskToolbar } from "@/features/tasks/components/task-toolbar";
-import { TaskCard } from "@/features/tasks/components/task-card";
-import { TaskFormDialog } from "@/features/tasks/components/task-form-dialog";
+import { TaskToolbar, TaskCard, TaskFormDialog } from "@/features/tasks";
 import { useTasks, useTasksLoading, useTasksError, useTaskActions } from "@/store/task.store";
-import { UI_LABELS } from "@/constants/ui.constants";
-import { useDebounce } from "@/hooks/use-debounce";
+import { UI_LABELS } from "@/constants";
+import { useDebounce } from "@/hooks";
+
 
 export function BoardPage(): React.JSX.Element {
   const tasks = useTasks();
@@ -12,20 +11,16 @@ export function BoardPage(): React.JSX.Element {
   const error = useTasksError();
   const { fetchTasks } = useTaskActions();
 
-  // Dialog State
   const [isFormOpen, setIsFormOpen] = useState<boolean>(false);
   const [taskIdToEdit, setTaskIdToEdit] = useState<string | null>(null);
 
-  // Filter/Sort States
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [priorityFilter, setPriorityFilter] = useState<string>("ALL");
   const [statusFilter, setStatusFilter] = useState<string>("ALL");
   const [sortBy, setSortBy] = useState<string>("created_at");
 
-  // Debounced search query to prevent excessive filtration runs
   const debouncedSearchQuery = useDebounce(searchQuery, 250);
 
-  // Load Tasks on Mount
   useEffect(() => {
     fetchTasks();
   }, [fetchTasks]);
@@ -45,7 +40,6 @@ export function BoardPage(): React.JSX.Element {
     setTaskIdToEdit(null);
   };
 
-  // Compute Filtered and Sorted Tasks in-render (Derived State)
   const filteredTasks = tasks
     .filter((task) => {
       const matchesSearch = task.title.toLowerCase().includes(debouncedSearchQuery.toLowerCase());
@@ -71,13 +65,11 @@ export function BoardPage(): React.JSX.Element {
 
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-6 text-foreground">
-      {/* Page Header */}
       <div className="flex flex-col space-y-1">
         <h1 className="text-3xl font-bold text-white tracking-tight">{UI_LABELS.BOARD.TITLE}</h1>
         <p className="text-sm text-muted-foreground">{UI_LABELS.BOARD.SUBTITLE}</p>
       </div>
 
-      {/* Control Toolbar */}
       <TaskToolbar
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
@@ -90,7 +82,6 @@ export function BoardPage(): React.JSX.Element {
         onAddTaskClick={handleAddTaskClick}
       />
 
-      {/* Content Render Area */}
       {loading && tasks.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 space-y-4">
           <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
@@ -115,7 +106,6 @@ export function BoardPage(): React.JSX.Element {
         </div>
       )}
 
-      {/* Task Creation & Edit Modal */}
       <TaskFormDialog
         isOpen={isFormOpen}
         onClose={handleCloseForm}

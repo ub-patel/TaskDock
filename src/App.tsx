@@ -1,19 +1,22 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { LoginPage } from "@/pages/login";
-import { DashboardPage } from "@/pages/dashboard";
-import { BoardPage } from "@/pages/board";
-import { ProfilePage } from "@/pages/profile";
-import { SettingsPage } from "@/pages/settings";
-import { ProtectedRoute } from "@/components/common/protected-route";
-import { PublicRoute } from "@/components/common/public-route";
-import { AppLayout } from "@/components/layout/app-layout";
-import { APP_ROUTES } from "@/constants/route.constants";
+import { LoginPage } from "@/pages/Login/LoginPage";
+import { DashboardPage } from "@/pages/Dashboard/DashboardPage";
+import { BoardPage } from "@/pages/Board/BoardPage";
+import { ProfilePage } from "@/pages/Profile/ProfilePage";
+import { SettingsPage } from "@/pages/Settings/SettingsPage";
+import { NotFoundPage } from "@/pages/NotFound/NotFoundPage";
+import { UnauthorizedPage } from "@/pages/Unauthorized/UnauthorizedPage";
+import { ProtectedRoute, PublicRoute } from "@/components/common";
+import { AppLayout } from "@/components/layout";
+import { APP_ROUTES } from "@/constants";
+
 
 export function App(): React.JSX.Element {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Public auth portal */}
+        <Route path="/" element={<Navigate to={APP_ROUTES.LOGIN} replace />} />
+
         <Route
           path={APP_ROUTES.LOGIN}
           element={
@@ -23,7 +26,6 @@ export function App(): React.JSX.Element {
           }
         />
 
-        {/* Protected workspace routes */}
         <Route
           path={APP_ROUTES.DASHBOARD}
           element={
@@ -65,8 +67,10 @@ export function App(): React.JSX.Element {
           }
         />
 
-        {/* Fallback routing */}
-        <Route path="*" element={<Navigate to={APP_ROUTES.DASHBOARD} replace />} />
+        <Route path={APP_ROUTES.UNAUTHORIZED} element={<UnauthorizedPage />} />
+        <Route path={APP_ROUTES.NOT_FOUND} element={<NotFoundPage />} />
+
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>
   );

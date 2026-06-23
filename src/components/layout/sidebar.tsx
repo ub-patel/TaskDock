@@ -1,8 +1,8 @@
 import { NavLink } from "react-router-dom";
 import { LayoutDashboard, Kanban, User, ChevronLeft, ChevronRight, HardDrive, Settings } from "lucide-react";
 import { useSidebarOpen, useUiActions } from "@/store/ui.store";
-import { APP_ROUTES } from "@/constants/route.constants";
-import { UI_LABELS } from "@/constants/ui.constants";
+import { APP_ROUTES, UI_LABELS } from "@/constants";
+
 
 export function Sidebar(): React.JSX.Element {
   const isOpen = useSidebarOpen();
@@ -21,7 +21,6 @@ export function Sidebar(): React.JSX.Element {
         isOpen ? "w-64" : "w-16"
       }`}
     >
-      {/* Header / Brand */}
       <div className="h-16 flex items-center px-4 justify-between border-b border-border/80">
         <div className="flex items-center space-x-2 overflow-hidden">
           <div className="w-8 h-8 rounded bg-primary flex items-center justify-center text-primary-foreground font-bold shrink-0">
@@ -35,7 +34,6 @@ export function Sidebar(): React.JSX.Element {
         </div>
       </div>
 
-      {/* Navigation Links */}
       <nav className="flex-1 px-2 py-4 space-y-1 overflow-y-auto">
         {navItems.map((item) => (
           <NavLink
@@ -55,7 +53,6 @@ export function Sidebar(): React.JSX.Element {
         ))}
       </nav>
 
-      {/* Footer Toggle Button */}
       <div className="p-2 border-t border-border/80 flex justify-end">
         <button
           onClick={toggleSidebar}

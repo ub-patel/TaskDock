@@ -8,10 +8,8 @@ export function AppLayout({ children }: ChildrenProps): React.JSX.Element {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* Navigation Sidebar */}
       <Sidebar />
 
-      {/* Content wrapper with transition alignment */}
       <div className={`transition-all duration-300 min-h-screen flex flex-col ${
         isSidebarOpen ? "pl-64" : "pl-16"
       }`}>

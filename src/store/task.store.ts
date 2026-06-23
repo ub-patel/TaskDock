@@ -1,7 +1,8 @@
 import { create } from "zustand";
-import { TaskService } from "../services/task.service";
-import type { Task, CreateTaskInput, UpdateTaskInput } from "../types";
-import { UI_LABELS } from "@/constants/ui.constants";
+import { TaskService } from "@/services";
+import type { Task, CreateTaskInput, UpdateTaskInput } from "@/types";
+import { UI_LABELS } from "@/constants";
+
 
 interface TaskState {
   tasks: Task[];
@@ -46,7 +47,6 @@ export const useTaskStore = create<TaskState>()((set, get) => ({
     },
     updateTask: async (id: string, input: UpdateTaskInput): Promise<void> => {
       const previousTasks = get().tasks;
-      // Optimistic update
       set((state) => ({
         tasks: state.tasks.map((t) =>
           t.id === id
@@ -65,7 +65,6 @@ export const useTaskStore = create<TaskState>()((set, get) => ({
       try {
         await TaskService.updateTask(id, input);
       } catch (err: unknown) {
-        // Rollback
         const message = err instanceof Error ? err.message : UI_LABELS.TASK.ERROR.UPDATE;
         set({ tasks: previousTasks, error: message });
         throw err;
@@ -73,7 +72,6 @@ export const useTaskStore = create<TaskState>()((set, get) => ({
     },
     deleteTask: async (id: string): Promise<void> => {
       const previousTasks = get().tasks;
-      // Optimistic delete
       set((state) => ({
         tasks: state.tasks.filter((t) => t.id !== id),
       }));
@@ -81,7 +79,6 @@ export const useTaskStore = create<TaskState>()((set, get) => ({
       try {
         await TaskService.deleteTask(id);
       } catch (err: unknown) {
-        // Rollback
         const message = err instanceof Error ? err.message : UI_LABELS.TASK.ERROR.DELETE;
         set({ tasks: previousTasks, error: message });
         throw err;
@@ -90,7 +87,6 @@ export const useTaskStore = create<TaskState>()((set, get) => ({
   },
 }));
 
-// Export hooks for selectors with explicit return types
 export const useTasks = (): Task[] => useTaskStore((state) => state.tasks);
 export const useTasksLoading = (): boolean => useTaskStore((state) => state.loading);
 export const useTasksError = (): string | null => useTaskStore((state) => state.error);

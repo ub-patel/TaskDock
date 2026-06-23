@@ -4,8 +4,6 @@ import "./index.css";
 import { App } from "./App.tsx";
 import { supabase } from "@/lib/supabase-client";
 import { useAuthStore } from "@/store/auth.store";
-
-// Initialize session state change listener
 supabase.auth.onAuthStateChange((_event, session) => {
   const { setUser, setLoading } = useAuthStore.getState().actions;
   setUser(session?.user ?? null);
