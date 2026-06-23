@@ -34,3 +34,5 @@ export interface Task {
 
 export type CreateTaskInput = Omit<Task, "id" | "userId" | "createdAt">;
 export type UpdateTaskInput = Partial<CreateTaskInput>;
+export type ToastType = "error" | "success" | "info" | "warning";
+

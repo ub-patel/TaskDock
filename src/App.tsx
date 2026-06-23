@@ -9,11 +9,13 @@ import { UnauthorizedPage } from "@/pages/Unauthorized/UnauthorizedPage";
 import { ProtectedRoute, PublicRoute } from "@/components/common";
 import { AppLayout } from "@/components/layout";
 import { APP_ROUTES } from "@/constants";
+import { Toast } from "@/components/shared";
 
 
 export function App(): React.JSX.Element {
   return (
     <BrowserRouter>
+      <Toast />
       <Routes>
         <Route path="/" element={<Navigate to={APP_ROUTES.LOGIN} replace />} />
 

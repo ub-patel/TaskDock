@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { TaskToolbar, TaskCard, TaskFormDialog } from "@/features/tasks";
+import { TaskToolbar, TaskFormDialog } from "@/features/tasks";
+import { KanbanBoard } from "@/features/kanban-board";
 import { useTasks, useTasksLoading, useTasksError, useTaskActions } from "@/store/task.store";
 import { UI_LABELS } from "@/constants";
 import { useDebounce } from "@/hooks";
@@ -99,11 +100,7 @@ export function BoardPage(): React.JSX.Element {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {filteredTasks.map((task) => (
-            <TaskCard key={task.id} task={task} onEdit={handleEditTaskClick} />
-          ))}
-        </div>
+        <KanbanBoard tasks={filteredTasks} onEditTask={handleEditTaskClick} />
       )}
 
       <TaskFormDialog

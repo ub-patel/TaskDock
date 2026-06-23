@@ -1,7 +1,7 @@
 import { Search, Plus } from "lucide-react";
 import { UI_LABELS } from "@/constants";
 import { Card, Input, Select, Button } from "@/components/shared";
-
+import { sanitizeSearch } from "@/utils";
 
 interface TaskToolbarProps {
   searchQuery: string;
@@ -28,24 +28,26 @@ export function TaskToolbar({
 }: TaskToolbarProps): React.JSX.Element {
   return (
     <Card className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 border-border rounded-xl">
-      <div className="relative flex-1 max-w-md">
+      <div className="relative flex-1 max-w-md w-full">
         <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none z-10">
           <Search size={16} />
         </span>
         <Input
           type="text"
           value={searchQuery}
-          onChange={(e) => onSearchChange(e.target.value)}
+          onChange={(e) => onSearchChange(sanitizeSearch(e.target.value))}
           placeholder={UI_LABELS.TASK.TOOLBAR.SEARCH_PLACEHOLDER}
           className="pl-10 bg-secondary/20"
         />
       </div>
 
-      <div className="flex flex-wrap items-center gap-3">
+
+      <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 w-full md:w-auto">
         <Select
           value={statusFilter}
           onChange={(e) => onStatusChange(e.target.value)}
-          className="text-xs py-1.5 h-[34px] w-[130px] pr-8"
+          containerClassName="w-full sm:w-[130px]"
+          className="text-xs py-1.5 h-[34px] pr-8 w-full"
         >
           <option value="ALL" className="bg-zinc-900">{UI_LABELS.TASK.TOOLBAR.FILTER_STATUS}</option>
           <option value="TO_DO" className="bg-zinc-900">{UI_LABELS.TASK.STATUS.TO_DO}</option>
@@ -56,7 +58,8 @@ export function TaskToolbar({
         <Select
           value={priorityFilter}
           onChange={(e) => onPriorityChange(e.target.value)}
-          className="text-xs py-1.5 h-[34px] w-[140px] pr-8"
+          containerClassName="w-full sm:w-[140px]"
+          className="text-xs py-1.5 h-[34px] pr-8 w-full"
         >
           <option value="ALL" className="bg-zinc-900">{UI_LABELS.TASK.TOOLBAR.FILTER_PRIORITY}</option>
           <option value="LOW" className="bg-zinc-900">{UI_LABELS.TASK.PRIORITY.LOW}</option>
@@ -64,12 +67,13 @@ export function TaskToolbar({
           <option value="HIGH" className="bg-zinc-900">{UI_LABELS.TASK.PRIORITY.HIGH}</option>
         </Select>
 
-        <div className="flex items-center space-x-2 text-xs">
+        <div className="flex items-center space-x-2 text-xs w-full sm:w-auto">
           <span className="text-muted-foreground whitespace-nowrap">{UI_LABELS.TASK.TOOLBAR.SORT_BY}:</span>
           <Select
             value={sortBy}
             onChange={(e) => onSortByChange(e.target.value)}
-            className="text-xs py-1.5 h-[34px] w-[130px] pr-8"
+            containerClassName="w-full sm:w-[130px]"
+            className="text-xs py-1.5 h-[34px] pr-8 w-full"
           >
             <option value="created_at" className="bg-zinc-900">{UI_LABELS.TASK.TOOLBAR.SORT_CREATED_AT}</option>
             <option value="due_date" className="bg-zinc-900">{UI_LABELS.TASK.TOOLBAR.SORT_DUE_DATE}</option>
@@ -80,7 +84,7 @@ export function TaskToolbar({
         <Button
           onClick={onAddTaskClick}
           size="sm"
-          className="h-[34px] font-semibold"
+          className="h-[34px] font-semibold w-full sm:w-auto"
         >
           <Plus size={14} />
           <span>{UI_LABELS.TASK.TOOLBAR.ADD_TASK_BUTTON}</span>
@@ -89,3 +93,4 @@ export function TaskToolbar({
     </Card>
   );
 }
+

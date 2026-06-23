@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import type { ToastType } from "@/types";
 
 export interface ThemeOption {
   id: string;
@@ -23,15 +24,28 @@ export const applyTheme = (themeId: string): void => {
   localStorage.setItem("taskdock-theme", themeId);
 };
 
+export interface ToastInfo {
+  message: string;
+  type: ToastType;
+  id: number;
+}
+
 interface UiState {
   sidebarOpen: boolean;
   theme: string;
+  toast: ToastInfo | null;
   actions: {
     toggleSidebar: () => void;
     setSidebarOpen: (open: boolean) => void;
     setTheme: (themeId: string) => void;
+    showToast: (message: string, type?: ToastType) => void;
+    hideToast: () => void;
   };
 }
+
+
+
+let toastTimer: ReturnType<typeof setTimeout> | null = null;
 
 export const useUiStore = create<UiState>()((set) => {
   const savedTheme = localStorage.getItem("taskdock-theme") || "blue";
@@ -41,6 +55,7 @@ export const useUiStore = create<UiState>()((set) => {
   return {
     sidebarOpen: true,
     theme: savedTheme,
+    toast: null,
     actions: {
       toggleSidebar: () => set((state) => ({ sidebarOpen: !state.sidebarOpen })),
       setSidebarOpen: (sidebarOpen) => set({ sidebarOpen }),
@@ -48,10 +63,28 @@ export const useUiStore = create<UiState>()((set) => {
         applyTheme(themeId);
         set({ theme: themeId });
       },
+      showToast: (message, type = "info") => {
+        if (toastTimer) {
+          clearTimeout(toastTimer);
+        }
+        const id = Date.now();
+        set({ toast: { message, type, id } });
+        toastTimer = setTimeout(() => {
+          set({ toast: null });
+        }, 4000);
+      },
+      hideToast: () => {
+        if (toastTimer) {
+          clearTimeout(toastTimer);
+        }
+        set({ toast: null });
+      },
     },
   };
 });
 
 export const useSidebarOpen = (): boolean => useUiStore((state) => state.sidebarOpen);
 export const useCurrentTheme = (): string => useUiStore((state) => state.theme);
+export const useToast = (): ToastInfo | null => useUiStore((state) => state.toast);
 export const useUiActions = (): UiState["actions"] => useUiStore((state) => state.actions);
+

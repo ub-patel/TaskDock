@@ -1,43 +1,57 @@
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
+import { useTasks, useTaskActions } from "@/store/task.store";
 import { APP_ROUTES, UI_LABELS } from "@/constants";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/shared";
-
+import { StatsGrid, DeadlinesWidget } from "@/features/dashboard";
 
 export function DashboardPage(): React.JSX.Element {
-  return (
-    <div className="p-8 max-w-4xl mx-auto text-foreground">
-      <h1 className="text-3xl font-bold mb-4">{UI_LABELS.DASHBOARD.TITLE}</h1>
-      <p className="text-muted-foreground mb-8">{UI_LABELS.DASHBOARD.SUBTITLE}</p>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        <Card className="bg-card">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-lg font-semibold">{UI_LABELS.DASHBOARD.KANBAN_CARD_TITLE}</CardTitle>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <p className="text-sm text-muted-foreground mb-4">{UI_LABELS.DASHBOARD.KANBAN_CARD_DESC}</p>
-            <div className="h-20 bg-secondary/50 rounded flex items-center justify-center text-sm border border-border text-center px-4">
-              {UI_LABELS.DASHBOARD.KANBAN_CARD_FOOTER}
-            </div>
-          </CardContent>
-        </Card>
+  const tasks = useTasks();
+  const { fetchTasks } = useTaskActions();
 
-        <Card className="bg-card">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-lg font-semibold">{UI_LABELS.DASHBOARD.PROFILE_CARD_TITLE}</CardTitle>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <p className="text-sm text-muted-foreground mb-4">{UI_LABELS.DASHBOARD.PROFILE_CARD_DESC}</p>
-            <Link
-              to={APP_ROUTES.PROFILE}
-              className="inline-flex items-center space-x-1 text-primary hover:underline text-sm font-medium"
-            >
-              <span>{UI_LABELS.DASHBOARD.PROFILE_CARD_LINK}</span>
-              <ArrowRight size={14} />
-            </Link>
-          </CardContent>
-        </Card>
+  useEffect(() => {
+    fetchTasks();
+  }, [fetchTasks]);
+
+  return (
+    <div className="p-8 max-w-6xl mx-auto text-foreground space-y-8 animate-fade-in">
+      <div className="flex flex-col space-y-1">
+        <h1 className="text-3xl font-bold text-white tracking-tight">
+          {UI_LABELS.DASHBOARD.TITLE}
+        </h1>
+        <p className="text-sm text-muted-foreground">
+          {UI_LABELS.DASHBOARD.SUBTITLE}
+        </p>
+      </div>
+
+      <StatsGrid tasks={tasks} />
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2">
+          <DeadlinesWidget tasks={tasks} />
+        </div>
+
+        <div>
+          <Card className="bg-zinc-900/40 border-white/5 backdrop-blur-xl">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base font-bold text-white">
+                {UI_LABELS.DASHBOARD.KANBAN_CARD_TITLE}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p className="text-xs text-muted-foreground">
+                {UI_LABELS.DASHBOARD.KANBAN_CARD_DESC}
+              </p>
+              <Link to={APP_ROUTES.BOARD}>
+                <button className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-semibold rounded-md transition select-none cursor-pointer">
+                  <span>Open Kanban Board</span>
+                  <ArrowRight size={14} />
+                </button>
+              </Link>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );
