@@ -23,7 +23,8 @@ export type TaskStatus = "TO_DO" | "IN_PROGRESS" | "COMPLETED";
 
 export interface Task {
   id: string;
-  userId: string;
+  createdBy: string;
+  assignedUserId?: string;
   title: string;
   description?: string;
   priority: TaskPriority;
@@ -32,7 +33,7 @@ export interface Task {
   createdAt: string;
 }
 
-export type CreateTaskInput = Omit<Task, "id" | "userId" | "createdAt">;
+export type CreateTaskInput = Omit<Task, "id" | "createdBy" | "createdAt">;
 export type UpdateTaskInput = Partial<CreateTaskInput>;
 export type ToastType = "error" | "success" | "info" | "warning";
 

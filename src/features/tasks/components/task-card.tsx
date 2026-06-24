@@ -1,9 +1,8 @@
 import { Calendar, Edit2, Trash2 } from "lucide-react";
-import { useTaskActions } from "@/store/task.store";
+import { useTaskActions, useProfiles } from "@/store/task.store";
 import { UI_LABELS } from "@/constants";
 import type { Task } from "@/types";
 import { Card, Badge, Button } from "@/components/shared";
-
 
 interface TaskCardProps {
   task: Task;
@@ -12,6 +11,17 @@ interface TaskCardProps {
 
 export function TaskCard({ task, onEdit }: TaskCardProps): React.JSX.Element {
   const { deleteTask } = useTaskActions();
+  const profiles = useProfiles();
+
+  const assignee = task.assignedUserId ? profiles.find((p) => p.id === task.assignedUserId) : undefined;
+  const assigneeName = assignee ? assignee.fullName : "Unassigned";
+  const initials = assigneeName
+    .split(" ")
+    .filter(Boolean)
+    .map((word) => word[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase() || "?";
 
   const handleEditClick = (): void => {
     onEdit(task.id);
@@ -74,9 +84,18 @@ export function TaskCard({ task, onEdit }: TaskCardProps): React.JSX.Element {
       </div>
 
       <div className="flex items-center justify-between pt-2 border-t border-border/40 text-xs">
-        <Badge variant={task.priority.toLowerCase() as "low" | "medium" | "high"}>
-          {task.priority}
-        </Badge>
+        <div className="flex items-center space-x-2">
+          <Badge variant={task.priority.toLowerCase() as "low" | "medium" | "high"}>
+            {task.priority}
+          </Badge>
+
+          <div
+            className="w-6 h-6 rounded-full bg-zinc-800 border border-solid border-white/5 flex items-center justify-center text-[10px] font-bold text-zinc-300 cursor-help"
+            title={`Assigned to: ${assigneeName}`}
+          >
+            {initials}
+          </div>
+        </div>
 
         <div className="flex items-center space-x-1 text-muted-foreground">
           <Calendar size={12} />

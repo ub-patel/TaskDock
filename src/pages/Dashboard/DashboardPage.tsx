@@ -10,11 +10,12 @@ import { StatsGrid, DeadlinesWidget } from "@/features/dashboard";
 export function DashboardPage(): React.JSX.Element {
   const tasks = useTasks();
   const loading = useTasksLoading();
-  const { fetchTasks } = useTaskActions();
+  const { fetchTasks, fetchProfiles } = useTaskActions();
 
   useEffect(() => {
     fetchTasks();
-  }, [fetchTasks]);
+    fetchProfiles();
+  }, [fetchTasks, fetchProfiles]);
 
   return (
     <div className="p-8 max-w-6xl mx-auto text-foreground space-y-8 animate-fade-in">

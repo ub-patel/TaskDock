@@ -2,6 +2,7 @@ import { Search, Plus } from "lucide-react";
 import { UI_LABELS } from "@/constants";
 import { Card, Input, Select, Button } from "@/components/shared";
 import { sanitizeSearch } from "@/utils";
+import { useProfiles } from "@/store/task.store";
 
 interface TaskToolbarProps {
   searchQuery: string;
@@ -10,6 +11,8 @@ interface TaskToolbarProps {
   onPriorityChange: (val: string) => void;
   statusFilter: string;
   onStatusChange: (val: string) => void;
+  assigneeFilter: string;
+  onAssigneeChange: (val: string) => void;
   sortBy: string;
   onSortByChange: (val: string) => void;
   onAddTaskClick: () => void;
@@ -22,13 +25,17 @@ export function TaskToolbar({
   onPriorityChange,
   statusFilter,
   onStatusChange,
+  assigneeFilter,
+  onAssigneeChange,
   sortBy,
   onSortByChange,
   onAddTaskClick,
 }: TaskToolbarProps): React.JSX.Element {
+  const profiles = useProfiles();
+
   return (
     <Card className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 border-border rounded-xl">
-      <div className="relative flex-1 max-w-md w-full">
+      <div className="relative flex-1 max-w-sm w-full">
         <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none z-10">
           <Search size={16} />
         </span>
@@ -40,7 +47,6 @@ export function TaskToolbar({
           className="pl-10 bg-secondary/20"
         />
       </div>
-
 
       <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 w-full md:w-auto">
         <Select
@@ -58,7 +64,7 @@ export function TaskToolbar({
         <Select
           value={priorityFilter}
           onChange={(e) => onPriorityChange(e.target.value)}
-          containerClassName="w-full sm:w-[140px]"
+          containerClassName="w-full sm:w-[135px]"
           className="text-xs py-1.5 h-[34px] w-full"
         >
           <option value="ALL" className="bg-zinc-900">{UI_LABELS.TASK.TOOLBAR.FILTER_PRIORITY}</option>
@@ -67,12 +73,27 @@ export function TaskToolbar({
           <option value="HIGH" className="bg-zinc-900">{UI_LABELS.TASK.PRIORITY.HIGH}</option>
         </Select>
 
+        <Select
+          value={assigneeFilter}
+          onChange={(e) => onAssigneeChange(e.target.value)}
+          containerClassName="w-full sm:w-[145px]"
+          className="text-xs py-1.5 h-[34px] w-full"
+        >
+          <option value="ALL" className="bg-zinc-900">All Assignees</option>
+          <option value="ME" className="bg-zinc-900">Assigned to Me</option>
+          {profiles.map((p) => (
+            <option key={p.id} value={p.id} className="bg-zinc-900">
+              {p.fullName}
+            </option>
+          ))}
+        </Select>
+
         <div className="flex items-center space-x-2 text-xs w-full sm:w-auto">
           <span className="text-muted-foreground whitespace-nowrap">{UI_LABELS.TASK.TOOLBAR.SORT_BY}:</span>
           <Select
             value={sortBy}
             onChange={(e) => onSortByChange(e.target.value)}
-            containerClassName="w-full sm:w-[130px]"
+            containerClassName="w-full sm:w-[125px]"
             className="text-xs py-1.5 h-[34px] w-full"
           >
             <option value="created_at" className="bg-zinc-900">{UI_LABELS.TASK.TOOLBAR.SORT_CREATED_AT}</option>
@@ -84,7 +105,7 @@ export function TaskToolbar({
         <Button
           onClick={onAddTaskClick}
           size="sm"
-          className="h-[34px] font-semibold w-full sm:w-auto"
+          className="h-[34px] font-semibold w-full sm:w-auto shrink-0"
         >
           <Plus size={14} />
           <span>{UI_LABELS.TASK.TOOLBAR.ADD_TASK_BUTTON}</span>

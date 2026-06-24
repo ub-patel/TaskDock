@@ -1,18 +1,19 @@
 import { useEffect, useState } from "react";
-import { TaskToolbar, TaskFormDialog } from "@/features/tasks";
+import { TaskToolbar, TaskFormDialog, TaskListTable } from "@/features/tasks";
 import { KanbanBoard } from "@/features/kanban-board";
 import { useTasks, useTasksLoading, useTasksError, useTaskActions } from "@/store/task.store";
+import { useAuthUser } from "@/store/auth.store";
 import { UI_LABELS } from "@/constants";
 import { useDebounce } from "@/hooks";
 import { Skeleton } from "@/components/shared";
-
-
+import { Kanban, List } from "lucide-react";
 
 export function BoardPage(): React.JSX.Element {
   const tasks = useTasks();
   const loading = useTasksLoading();
   const error = useTasksError();
-  const { fetchTasks } = useTaskActions();
+  const { fetchTasks, fetchProfiles } = useTaskActions();
+  const user = useAuthUser();
 
   const [isFormOpen, setIsFormOpen] = useState<boolean>(false);
   const [taskIdToEdit, setTaskIdToEdit] = useState<string | null>(null);
@@ -20,13 +21,16 @@ export function BoardPage(): React.JSX.Element {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [priorityFilter, setPriorityFilter] = useState<string>("ALL");
   const [statusFilter, setStatusFilter] = useState<string>("ALL");
+  const [assigneeFilter, setAssigneeFilter] = useState<string>("ALL");
   const [sortBy, setSortBy] = useState<string>("created_at");
+  const [viewMode, setViewMode] = useState<"board" | "list">("board");
 
   const debouncedSearchQuery = useDebounce(searchQuery, 250);
 
   useEffect(() => {
     fetchTasks();
-  }, [fetchTasks]);
+    fetchProfiles();
+  }, [fetchTasks, fetchProfiles]);
 
   const handleAddTaskClick = (): void => {
     setTaskIdToEdit(null);
@@ -48,7 +52,15 @@ export function BoardPage(): React.JSX.Element {
       const matchesSearch = task.title.toLowerCase().includes(debouncedSearchQuery.toLowerCase());
       const matchesStatus = statusFilter === "ALL" || task.status === statusFilter;
       const matchesPriority = priorityFilter === "ALL" || task.priority === priorityFilter;
-      return matchesSearch && matchesStatus && matchesPriority;
+      
+      let matchesAssignee = true;
+      if (assigneeFilter === "ME") {
+        matchesAssignee = task.assignedUserId === user?.id;
+      } else if (assigneeFilter !== "ALL") {
+        matchesAssignee = task.assignedUserId === assigneeFilter;
+      }
+
+      return matchesSearch && matchesStatus && matchesPriority && matchesAssignee;
     })
     .sort((a, b) => {
       if (sortBy === "created_at") {
@@ -68,9 +80,36 @@ export function BoardPage(): React.JSX.Element {
 
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-6 text-foreground">
-      <div className="flex flex-col space-y-1">
-        <h1 className="text-3xl font-bold text-white tracking-tight">{UI_LABELS.BOARD.TITLE}</h1>
-        <p className="text-sm text-muted-foreground">{UI_LABELS.BOARD.SUBTITLE}</p>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="flex flex-col space-y-1">
+          <h1 className="text-3xl font-bold text-white tracking-tight">{UI_LABELS.BOARD.TITLE}</h1>
+          <p className="text-sm text-muted-foreground">{UI_LABELS.BOARD.SUBTITLE}</p>
+        </div>
+
+        <div className="inline-flex rounded-lg p-0.5 bg-zinc-900 border border-solid border-white/5 select-none shrink-0 self-start sm:self-center">
+          <button
+            onClick={() => setViewMode("board")}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition cursor-pointer ${
+              viewMode === "board"
+                ? "bg-primary text-primary-foreground shadow"
+                : "text-muted-foreground hover:text-white"
+            }`}
+          >
+            <Kanban size={13} />
+            <span>Board View</span>
+          </button>
+          <button
+            onClick={() => setViewMode("list")}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition cursor-pointer ${
+              viewMode === "list"
+                ? "bg-primary text-primary-foreground shadow"
+                : "text-muted-foreground hover:text-white"
+            }`}
+          >
+            <List size={13} />
+            <span>List View</span>
+          </button>
+        </div>
       </div>
 
       <TaskToolbar
@@ -80,6 +119,8 @@ export function BoardPage(): React.JSX.Element {
         onPriorityChange={setPriorityFilter}
         statusFilter={statusFilter}
         onStatusChange={setStatusFilter}
+        assigneeFilter={assigneeFilter}
+        onAssigneeChange={setAssigneeFilter}
         sortBy={sortBy}
         onSortByChange={setSortBy}
         onAddTaskClick={handleAddTaskClick}
@@ -121,6 +162,8 @@ export function BoardPage(): React.JSX.Element {
             {UI_LABELS.TASK.NO_TASKS_DESC}
           </p>
         </div>
+      ) : viewMode === "list" ? (
+        <TaskListTable tasks={filteredTasks} onEditTask={handleEditTaskClick} />
       ) : (
         <KanbanBoard tasks={filteredTasks} onEditTask={handleEditTaskClick} />
       )}

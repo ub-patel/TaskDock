@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { taskSchema, type TaskFormValues } from "../task.schema";
-import { useTaskActions, useTasks } from "@/store/task.store";
+import { useTaskActions, useTasks, useProfiles } from "@/store/task.store";
 import { useAuthUser } from "@/store/auth.store";
 import { UI_LABELS } from "@/constants";
 import { Dialog, DialogHeader, DialogTitle, DialogBody, DialogFooter, Input, Textarea, Select, Button } from "@/components/shared";
@@ -21,7 +21,8 @@ export function TaskFormDialog({
 }: TaskFormDialogProps): React.JSX.Element | null {
   const user = useAuthUser();
   const tasks = useTasks();
-  const { createTask, updateTask } = useTaskActions();
+  const profiles = useProfiles();
+  const { createTask, updateTask, fetchProfiles } = useTaskActions();
 
   const isEditMode = !!taskIdToEdit;
   const taskToEdit = tasks.find((t) => t.id === taskIdToEdit);
@@ -39,11 +40,13 @@ export function TaskFormDialog({
       priority: "MEDIUM",
       status: "TO_DO",
       dueDate: "",
+      assignedUserId: "",
     },
   });
 
   useEffect(() => {
     if (isOpen) {
+      fetchProfiles();
       if (isEditMode && taskToEdit) {
         reset({
           title: taskToEdit.title,
@@ -51,6 +54,7 @@ export function TaskFormDialog({
           priority: taskToEdit.priority,
           status: taskToEdit.status,
           dueDate: taskToEdit.dueDate ? taskToEdit.dueDate.substring(0, 10) : "",
+          assignedUserId: taskToEdit.assignedUserId || "",
         });
       } else {
         reset({
@@ -59,10 +63,11 @@ export function TaskFormDialog({
           priority: "MEDIUM",
           status: "TO_DO",
           dueDate: "",
+          assignedUserId: user?.id || "",
         });
       }
     }
-  }, [isOpen, isEditMode, taskToEdit, reset]);
+  }, [isOpen, isEditMode, taskToEdit, reset, fetchProfiles, user]);
 
   const onSubmit = async (values: TaskFormValues): Promise<void> => {
     try {
@@ -126,15 +131,28 @@ export function TaskFormDialog({
               <option value="IN_PROGRESS" className="bg-zinc-900">{UI_LABELS.TASK.STATUS.IN_PROGRESS}</option>
               <option value="COMPLETED" className="bg-zinc-900">{UI_LABELS.TASK.STATUS.COMPLETED}</option>
             </Select>
-          </div>
 
-          <Input
-            id="task-due-date"
-            type="date"
-            label={UI_LABELS.TASK.FORM.LABEL_DUE_DATE}
-            error={errors.dueDate?.message}
-            {...register("dueDate")}
-          />
+            <Select
+              id="task-assignee"
+              label="Assigned To"
+              error={errors.assignedUserId?.message}
+              {...register("assignedUserId")}
+            >
+              {profiles.map((profile) => (
+                <option key={profile.id} value={profile.id} className="bg-zinc-900">
+                  {profile.fullName}
+                </option>
+              ))}
+            </Select>
+
+            <Input
+              id="task-due-date"
+              type="date"
+              label={UI_LABELS.TASK.FORM.LABEL_DUE_DATE}
+              error={errors.dueDate?.message}
+              {...register("dueDate")}
+            />
+          </div>
         </DialogBody>
 
         <DialogFooter className="px-6 pb-6 pt-0">

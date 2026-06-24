@@ -21,6 +21,7 @@ create table public.profiles (
 create table public.tasks (
   id uuid default gen_random_uuid() primary key,
   user_id uuid references public.profiles(id) on delete cascade not null,
+  assigned_user_id uuid references public.profiles(id) on delete cascade not null,
   title text not null check (char_length(title) >= 1 and char_length(title) <= 100),
   description text check (char_length(description) <= 1000),
   priority text check (priority in ('LOW', 'MEDIUM', 'HIGH')) default 'MEDIUM' not null,
@@ -76,7 +77,7 @@ create policy "Allow users to update their own profile"
 create policy "Allow users to view their own tasks"
   on public.tasks for select
   to authenticated
-  using (auth.uid() = user_id);
+  using (auth.uid() = user_id or auth.uid() = assigned_user_id);
 
 create policy "Allow users to insert their own tasks"
   on public.tasks for insert
@@ -86,7 +87,7 @@ create policy "Allow users to insert their own tasks"
 create policy "Allow users to update their own tasks"
   on public.tasks for update
   to authenticated
-  using (auth.uid() = user_id);
+  using (auth.uid() = user_id or auth.uid() = assigned_user_id);
 
 create policy "Allow users to delete their own tasks"
   on public.tasks for delete
@@ -98,6 +99,7 @@ create policy "Allow users to delete their own tasks"
 -- =========================================================================
 -- Create indexes to optimize queries on frequent search, filter, and sort keys.
 create index tasks_user_id_idx on public.tasks (user_id);
+create index tasks_assigned_user_id_idx on public.tasks (assigned_user_id);
 create index tasks_status_idx on public.tasks (status);
 create index tasks_priority_idx on public.tasks (priority);
 create index tasks_due_date_idx on public.tasks (due_date);

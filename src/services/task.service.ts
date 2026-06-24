@@ -1,9 +1,10 @@
 import { supabase } from "@/lib/supabase-client";
-import type { Task, CreateTaskInput, UpdateTaskInput } from "@/types";
+import type { Task, CreateTaskInput, UpdateTaskInput, Profile } from "@/types";
 
 interface DbTask {
   id: string;
   user_id: string;
+  assigned_user_id: string;
   title: string;
   description: string | null;
   priority: Task["priority"];
@@ -25,7 +26,8 @@ export class TaskService {
 
     return dbTasks.map((task) => ({
       id: task.id,
-      userId: task.user_id,
+      createdBy: task.user_id,
+      assignedUserId: task.assigned_user_id,
       title: task.title,
       description: task.description || "",
       priority: task.priority,
@@ -40,6 +42,7 @@ export class TaskService {
       .from("tasks")
       .insert({
         user_id: userId,
+        assigned_user_id: input.assignedUserId || userId,
         title: input.title,
         description: input.description || "",
         priority: input.priority,
@@ -55,7 +58,8 @@ export class TaskService {
 
     return {
       id: dbTask.id,
-      userId: dbTask.user_id,
+      createdBy: dbTask.user_id,
+      assignedUserId: dbTask.assigned_user_id,
       title: dbTask.title,
       description: dbTask.description || "",
       priority: dbTask.priority,
@@ -72,6 +76,7 @@ export class TaskService {
     if (input.priority !== undefined) updates.priority = input.priority;
     if (input.status !== undefined) updates.status = input.status;
     if (input.dueDate !== undefined) updates.due_date = input.dueDate || null;
+    if (input.assignedUserId !== undefined) updates.assigned_user_id = input.assignedUserId;
 
     const { data, error } = await supabase
       .from("tasks")
@@ -86,7 +91,8 @@ export class TaskService {
 
     return {
       id: dbTask.id,
-      userId: dbTask.user_id,
+      createdBy: dbTask.user_id,
+      assignedUserId: dbTask.assigned_user_id,
       title: dbTask.title,
       description: dbTask.description || "",
       priority: dbTask.priority,
@@ -103,5 +109,32 @@ export class TaskService {
       .eq("id", id);
 
     if (error) throw error;
+  }
+
+  static async getProfiles(): Promise<Profile[]> {
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("*")
+      .order("full_name", { ascending: true });
+
+    if (error) throw error;
+
+    interface DbProfile {
+      id: string;
+      email: string;
+      full_name: string;
+      avatar_url: string | null;
+      created_at: string;
+    }
+
+    const dbProfiles = (data || []) as DbProfile[];
+
+    return dbProfiles.map((p) => ({
+      id: p.id,
+      email: p.email,
+      fullName: p.full_name || p.email.split("@")[0],
+      avatarUrl: p.avatar_url || "",
+      createdAt: p.created_at,
+    }));
   }
 }
