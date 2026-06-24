@@ -1,73 +1,85 @@
-# React + TypeScript + Vite
+# TaskDock
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Dock Your Tasks. Drive Your Progress.
 
-Currently, two official plugins are available:
+### Live Application
+* **Deployment URL**: [https://task-dock-lyart.vercel.app](https://task-dock-lyart.vercel.app)
+* Hosted on **Vercel** with client-side SPA routing rewrites configuration.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## Technical Stack
+* **Frontend Core**: React 19, TypeScript, Vite
+* **Styling**: Tailwind CSS v4 variables with dynamic theme HSL mapping
+* **State Management**: Zustand stores with optimistic updates
+* **Form & Schema Validation**: React Hook Form with Zod schemas
+* **Database & Auth Support**: Supabase Client SDK
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## Infrastructure Architecture
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### 1. Supabase Backend Integration
+* **User Authentication**: Handles secure user registration, email verification checks, and session management.
+* **Row-Level Security (RLS)**: Enforces boundaries at the database level. Each user is restricted to querying, inserting, updating, or deleting only their own tasks via the SQL policy:
+  ```sql
+  auth.uid() = user_id
+  ```
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### 2. Vercel Single-Page Application (SPA) Routing
+* Enforced redirects inside `vercel.json` to handle client-side routing correctly. Direct page requests or refreshing on routes like `/dashboard` or `/board` rewrite back to `index.html` seamlessly.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### 3. Centralized UI Constants Config
+* All user-facing strings, headers, errors, dialog text, and validation labels are stored in `src/constants/ui.constants.ts`. There are zero hardcoded string literals inside markup.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### 4. Input Security Validation
+* Input forms validate types, boundaries, and lengths via Zod schema refinements.
+* Employs regular expression scanners to block SQL Injection patterns (e.g. `' OR '1'='1`), HTML/XSS/XML Script tags (e.g. `<script>`, `javascript:`), and Path Traversal attempts (`../`).
+* Suspicious actions trigger both an inline error under the field and a floating error toast alert.
+
+---
+
+## Project Structure
+```text
+TaskDock/
+├── src/
+│   ├── components/       # Shared UI (Button, Card, Input, Toast, Skeleton, Dialog)
+│   ├── constants/        # Centralized UI labels & App route paths
+│   ├── features/         # Feature components (Auth, Dashboard, Kanban-Board, Tasks)
+│   ├── hooks/            # Reusable React hooks
+│   ├── pages/            # View pages (Login, Dashboard, Board, Profile, Settings)
+│   ├── services/         # Supabase Client and Database services
+│   ├── store/            # Zustand global stores (auth, task, ui)
+│   ├── types/            # TypeScript schemas & global types
+│   └── utils/            # General utilities & security sanitizers
+├── public/               # Static assets
+├── vercel.json           # Vercel deployment rewrite rules
+└── package.json          # Dependency packages
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Setup & Local Development
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### 1. Requirements
+Ensure you have Node.js installed on your system.
+
+### 2. Environment Variables Setup
+Create a `.env.local` file in the project root:
+```env
+VITE_SUPABASE_URL=your_supabase_project_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 ```
+
+### 3. Installation
+Install all dependency packages:
+```bash
+npm install
+```
+
+### 4. Run Development Server
+Start the local server:
+```bash
+npm run dev
+```
+The server will start at `http://localhost:5173/`.

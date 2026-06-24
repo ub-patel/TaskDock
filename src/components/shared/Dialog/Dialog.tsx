@@ -44,7 +44,7 @@ export function Dialog({
 
       <div
         className={cn(
-          "relative w-full bg-zinc-900 border border-border rounded-xl shadow-2xl overflow-hidden z-10 flex flex-col",
+          "relative w-full bg-zinc-900 border border-border rounded-xl shadow-2xl z-10 flex flex-col",
           sizeClasses[size],
           className
         )}

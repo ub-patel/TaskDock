@@ -47,7 +47,7 @@ export function TaskToolbar({
           value={statusFilter}
           onChange={(e) => onStatusChange(e.target.value)}
           containerClassName="w-full sm:w-[130px]"
-          className="text-xs py-1.5 h-[34px] pr-8 w-full"
+          className="text-xs py-1.5 h-[34px] w-full"
         >
           <option value="ALL" className="bg-zinc-900">{UI_LABELS.TASK.TOOLBAR.FILTER_STATUS}</option>
           <option value="TO_DO" className="bg-zinc-900">{UI_LABELS.TASK.STATUS.TO_DO}</option>
@@ -59,7 +59,7 @@ export function TaskToolbar({
           value={priorityFilter}
           onChange={(e) => onPriorityChange(e.target.value)}
           containerClassName="w-full sm:w-[140px]"
-          className="text-xs py-1.5 h-[34px] pr-8 w-full"
+          className="text-xs py-1.5 h-[34px] w-full"
         >
           <option value="ALL" className="bg-zinc-900">{UI_LABELS.TASK.TOOLBAR.FILTER_PRIORITY}</option>
           <option value="LOW" className="bg-zinc-900">{UI_LABELS.TASK.PRIORITY.LOW}</option>
@@ -73,7 +73,7 @@ export function TaskToolbar({
             value={sortBy}
             onChange={(e) => onSortByChange(e.target.value)}
             containerClassName="w-full sm:w-[130px]"
-            className="text-xs py-1.5 h-[34px] pr-8 w-full"
+            className="text-xs py-1.5 h-[34px] w-full"
           >
             <option value="created_at" className="bg-zinc-900">{UI_LABELS.TASK.TOOLBAR.SORT_CREATED_AT}</option>
             <option value="due_date" className="bg-zinc-900">{UI_LABELS.TASK.TOOLBAR.SORT_DUE_DATE}</option>

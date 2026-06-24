@@ -32,17 +32,45 @@
   --color-priority-low: hsl(142.1 76.2% 36.3%);
   --color-priority-medium: hsl(35.2 91.7% 32.9%);
   --color-priority-high: hsl(346.8 77.2% 49.8%);
+
+  --animate-fade-in: fade-in 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: scale(0.97) translateY(4px);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
 }
 
 @layer base {
   * {
     box-sizing: border-box;
   }
-  body {
+  html, body {
+    color-scheme: dark;
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     margin: 0;
     padding: 0;
   }
+  input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--color-primary) !important;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 25%, transparent) !important;
+  }
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1) brightness(0.9);
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  input[type="date"]::-webkit-calendar-picker-indicator:hover {
+    filter: invert(1) brightness(1.2);
+  }
 }
+

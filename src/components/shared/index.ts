@@ -7,4 +7,6 @@ export * from "./Badge";
 export * from "./Dialog";
 export * from "./Loader";
 export * from "./Toast";
+export * from "./Skeleton";
+
 

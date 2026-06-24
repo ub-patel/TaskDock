@@ -4,6 +4,8 @@ import { KanbanBoard } from "@/features/kanban-board";
 import { useTasks, useTasksLoading, useTasksError, useTaskActions } from "@/store/task.store";
 import { UI_LABELS } from "@/constants";
 import { useDebounce } from "@/hooks";
+import { Skeleton } from "@/components/shared";
+
 
 
 export function BoardPage(): React.JSX.Element {
@@ -84,9 +86,29 @@ export function BoardPage(): React.JSX.Element {
       />
 
       {loading && tasks.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20 space-y-4">
-          <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
-          <p className="text-sm text-muted-foreground">{UI_LABELS.TASK.LOADING_TASKS}</p>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {[1, 2, 3].map((colIndex) => (
+            <div key={colIndex} className="bg-zinc-900/30 border border-solid border-white/5 rounded-2xl p-4 space-y-4">
+              <div className="flex items-center justify-between">
+                <Skeleton className="h-6 w-24 rounded-lg" />
+                <Skeleton className="h-5 w-6 rounded-full" />
+              </div>
+              <div className="space-y-3">
+                {[1, 2].map((cardIndex) => (
+                  <div key={cardIndex} className="p-4 rounded-xl border border-solid border-white/5 bg-zinc-950/20 space-y-4">
+                    <div className="space-y-2">
+                      <Skeleton className="h-4 w-4/5 rounded" />
+                      <Skeleton className="h-3 w-3/5 rounded" />
+                    </div>
+                    <div className="flex justify-between items-center pt-2">
+                      <Skeleton className="h-5 w-14 rounded-full" />
+                      <Skeleton className="h-4 w-20 rounded" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
         </div>
       ) : error ? (
         <div className="p-4 rounded-md border border-destructive/20 bg-destructive/10 text-destructive-foreground text-sm text-center">

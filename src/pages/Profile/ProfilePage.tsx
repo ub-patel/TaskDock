@@ -3,12 +3,14 @@ import { Link } from "react-router-dom";
 import { ArrowLeft, Calendar, ListTodo, Clock, CheckCircle2, AlertTriangle, TrendingUp } from "lucide-react";
 import { APP_ROUTES, UI_LABELS } from "@/constants";
 import { useAuthUser } from "@/store/auth.store";
-import { useTasks, useTaskActions } from "@/store/task.store";
-import { Card, CardContent } from "@/components/shared";
+import { useTasks, useTasksLoading, useTaskActions } from "@/store/task.store";
+import { Card, CardContent, Skeleton } from "@/components/shared";
+
 
 export function ProfilePage(): React.JSX.Element {
   const user = useAuthUser();
   const tasks = useTasks();
+  const loading = useTasksLoading();
   const { fetchTasks } = useTaskActions();
 
   useEffect(() => {
@@ -112,41 +114,67 @@ export function ProfilePage(): React.JSX.Element {
           {UI_LABELS.PROFILE.STATS_HEADER}
         </h3>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {statsList.map((stat) => (
-            <Card key={stat.label} className={`border border-solid shadow-md rounded-xl overflow-hidden ${stat.colorClass}`}>
-              <CardContent className="p-5 flex flex-col justify-between h-28">
-                <div className="flex justify-between items-center">
-                  <span className="text-xs font-bold uppercase tracking-wider opacity-85 text-zinc-400">
-                    {stat.label}
-                  </span>
-                  <stat.icon size={16} className="opacity-70" />
+        {loading && tasks.length === 0 ? (
+          <>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {[1, 2, 3, 4].map((i) => (
+                <Card key={i} className="border border-solid border-white/5 bg-zinc-900/10">
+                  <CardContent className="p-5 flex flex-col justify-between h-28">
+                    <Skeleton className="h-4 w-16 rounded" />
+                    <Skeleton className="h-8 w-12 rounded" />
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+            <Card className="bg-zinc-900/30 border-white/5 backdrop-blur-xl">
+              <CardContent className="p-6 space-y-4">
+                <div className="flex justify-between items-center text-sm font-semibold">
+                  <Skeleton className="h-4 w-28 rounded" />
+                  <Skeleton className="h-4 w-8 rounded" />
                 </div>
-                <span className="text-3xl font-black tracking-tight text-white select-text">
-                  {stat.value}
-                </span>
+                <Skeleton className="w-full h-3 rounded-full" />
               </CardContent>
             </Card>
-          ))}
-        </div>
+          </>
+        ) : (
+          <>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {statsList.map((stat) => (
+                <Card key={stat.label} className={`border border-solid shadow-md rounded-xl overflow-hidden ${stat.colorClass}`}>
+                  <CardContent className="p-5 flex flex-col justify-between h-28">
+                    <div className="flex justify-between items-center">
+                      <span className="text-xs font-bold uppercase tracking-wider opacity-85 text-zinc-400">
+                        {stat.label}
+                      </span>
+                      <stat.icon size={16} className="opacity-70" />
+                    </div>
+                    <span className="text-3xl font-black tracking-tight text-white select-text">
+                      {stat.value}
+                    </span>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
 
-        <Card className="bg-zinc-900/30 border-white/5 backdrop-blur-xl">
-          <CardContent className="p-6 space-y-4">
-            <div className="flex justify-between items-center text-sm font-semibold text-white">
-              <span className="flex items-center gap-2">
-                <TrendingUp size={16} className="text-primary" />
-                {UI_LABELS.PROFILE.STATS_RATE}
-              </span>
-              <span className="text-primary">{completionRate}%</span>
-            </div>
-            <div className="w-full h-3 bg-zinc-800 rounded-full overflow-hidden border border-white/5">
-              <div
-                className="h-full bg-primary rounded-full transition-all duration-500 shadow-[0_0_10px_var(--color-primary)]"
-                style={{ width: `${completionRate}%` }}
-              ></div>
-            </div>
-          </CardContent>
-        </Card>
+            <Card className="bg-zinc-900/30 border-white/5 backdrop-blur-xl">
+              <CardContent className="p-6 space-y-4">
+                <div className="flex justify-between items-center text-sm font-semibold text-white">
+                  <span className="flex items-center gap-2">
+                    <TrendingUp size={16} className="text-primary" />
+                    {UI_LABELS.PROFILE.STATS_RATE}
+                  </span>
+                  <span className="text-primary">{completionRate}%</span>
+                </div>
+                <div className="w-full h-3 bg-zinc-800 rounded-full overflow-hidden border border-white/5">
+                  <div
+                    className="h-full bg-primary rounded-full transition-all duration-500 shadow-[0_0_10px_var(--color-primary)]"
+                    style={{ width: `${completionRate}%` }}
+                  ></div>
+                </div>
+              </CardContent>
+            </Card>
+          </>
+        )}
       </div>
     </div>
   );

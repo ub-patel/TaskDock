@@ -2,6 +2,8 @@ import { create } from "zustand";
 import { TaskService } from "@/services";
 import type { Task, CreateTaskInput, UpdateTaskInput } from "@/types";
 import { UI_LABELS } from "@/constants";
+import { useUiStore } from "@/store/ui.store";
+
 
 
 interface TaskState {
@@ -29,6 +31,7 @@ export const useTaskStore = create<TaskState>()((set, get) => ({
       } catch (err: unknown) {
         const message = err instanceof Error ? err.message : UI_LABELS.TASK.ERROR.LOAD;
         set({ error: message, loading: false });
+        useUiStore.getState().actions.showToast(message, "error");
       }
     },
     createTask: async (userId: string, input: CreateTaskInput): Promise<void> => {
@@ -39,9 +42,11 @@ export const useTaskStore = create<TaskState>()((set, get) => ({
           tasks: [newTask, ...state.tasks],
           loading: false,
         }));
+        useUiStore.getState().actions.showToast("Task created successfully", "success");
       } catch (err: unknown) {
         const message = err instanceof Error ? err.message : UI_LABELS.TASK.ERROR.CREATE;
         set({ error: message, loading: false });
+        useUiStore.getState().actions.showToast(message, "error");
         throw err;
       }
     },
@@ -64,9 +69,11 @@ export const useTaskStore = create<TaskState>()((set, get) => ({
 
       try {
         await TaskService.updateTask(id, input);
+        useUiStore.getState().actions.showToast("Changes saved successfully", "success");
       } catch (err: unknown) {
         const message = err instanceof Error ? err.message : UI_LABELS.TASK.ERROR.UPDATE;
         set({ tasks: previousTasks, error: message });
+        useUiStore.getState().actions.showToast(message, "error");
         throw err;
       }
     },
@@ -78,9 +85,11 @@ export const useTaskStore = create<TaskState>()((set, get) => ({
 
       try {
         await TaskService.deleteTask(id);
+        useUiStore.getState().actions.showToast("Task deleted successfully", "success");
       } catch (err: unknown) {
         const message = err instanceof Error ? err.message : UI_LABELS.TASK.ERROR.DELETE;
         set({ tasks: previousTasks, error: message });
+        useUiStore.getState().actions.showToast(message, "error");
         throw err;
       }
     },
